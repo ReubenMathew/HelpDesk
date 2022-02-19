@@ -1,5 +1,5 @@
 From ubuntu
-DEBIAN_FRONTEND="noninteractive"
+ARG DEBIAN_FRONTEND="noninteractive"
 MAINTAINER  orion nelson <me@or9.ca>
 
 
