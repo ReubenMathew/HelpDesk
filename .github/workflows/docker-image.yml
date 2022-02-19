@@ -22,3 +22,33 @@ jobs:
       uses: ishworkh/docker-image-artifact-upload@v1
       with:
         image: "hdesk:latest"
+        
+  download_image:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+      - name: Download image
+        uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: 'hdesk:latest'
+  run_image:
+      needs: download_image
+      runs-on: ubuntu-latest
+      steps:
+      - name: Run Docker Image and Test Modules
+        uses: addnab/docker-run-action@v3
+        with:
+          image: 'hdesk:latest'
+          run: |
+            echo "Python3 Test"
+            echo $(python3 --version)
+            echo $(pip3 --version)
+            echo "Redis-Server Test"
+            echo $(redis.cli info server | grep ^redis_version:)
+            echo "Npm Version Test"
+            echo $(npm -- version)
+            echo "Postgress Test"
+            echo $(postgres -V)
+
