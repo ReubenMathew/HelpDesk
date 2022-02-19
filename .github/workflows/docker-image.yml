@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag hdesk:$(date +%s)
+      run: docker build . --file Dockerfile --tag hdesk:latest
     - name: Upload image
       uses: ishworkh/docker-image-artifact-upload@v1
       with:
