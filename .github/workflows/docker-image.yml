@@ -23,7 +23,7 @@ jobs:
       with:
         image: "hdesk:latest"
         
-  download_image:
+  run_image:
       needs: build
       runs-on: ubuntu-latest
       steps:
@@ -33,10 +33,6 @@ jobs:
         uses: ishworkh/docker-image-artifact-download@v1
         with:
           image: 'hdesk:latest'
-  run_image:
-      needs: download_image
-      runs-on: ubuntu-latest
-      steps:
       - name: Run Docker Image and Test Modules
         uses: addnab/docker-run-action@v3
         with:
