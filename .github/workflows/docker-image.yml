@@ -18,26 +18,26 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag hdesk:latest
-    - name: Upload image
-      uses: ishworkh/docker-image-artifact-upload@v1
-      with:
-        image: "hdesk:latest"
+    #- name: Upload image
+    #  uses: ishworkh/docker-image-artifact-upload@v1
+    #  with:
+    #    image: "hdesk:latest"
         
-  run_image:
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
-      - name: Checkout project
-        uses: actions/checkout@v2
-      - name: Download image
-        uses: ishworkh/docker-image-artifact-download@v1
-        with:
-          image: 'hdesk:latest'
-      - name: Run Docker Image and Test Modules
-        uses: addnab/docker-run-action@v3
-        with:
-          image: 'hdesk:latest'
-          run: |
+  #run_image:
+      #needs: build
+      #runs-on: ubuntu-latest
+      #steps:
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Download image
+      uses: ishworkh/docker-image-artifact-download@v1
+      with:
+        image: 'hdesk:latest'
+    - name: Run Docker Image and Test Modules
+      uses: addnab/docker-run-action@v3
+      with:
+        image: 'hdesk:latest'
+        run: |
             echo "Python3 Test"
             echo $(python3 --version)
             echo $(pip3 --version)
