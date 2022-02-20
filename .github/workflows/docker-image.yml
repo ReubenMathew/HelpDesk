@@ -29,10 +29,10 @@ jobs:
       #steps:
     - name: Checkout project
       uses: actions/checkout@v2
-    - name: Download image
-      uses: ishworkh/docker-image-artifact-download@v1
-      with:
-        image: 'hdesk:latest'
+    #- name: Download image
+    # uses: ishworkh/docker-image-artifact-download@v1
+    #  with:
+    #   image: 'hdesk:latest'
     - name: Run Docker Image and Test Modules
       uses: addnab/docker-run-action@v3
       with:
