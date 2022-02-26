@@ -1,6 +1,7 @@
-import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client'
+import { Container, Card, Grid, Row, Input, Button, Spacer, Text } from '@nextui-org/react';
+
 
 let socket = false;
 
@@ -24,7 +25,7 @@ const Post = ({ room, adminName }) => {
     socket.emit("join_room", roomName);
     const Message = {
       room: roomName,
-      message: `${adminName} has joined the Session`,
+      message: `${adminName} has joined the session.`,
       author: "System"
     }
     socket.emit("send_message", Message);
@@ -52,15 +53,73 @@ const Post = ({ room, adminName }) => {
   }
 
   return (
-    <div>
-      <Head>
-        <title>Admin View</title>
-      </Head>
-      <h1>Admin Chat View</h1>
-      <h3>{adminName} chatting with AnonymousUser{room}</h3>
-      <input placeholder="message" onChange={e => setInput(e.target.value)} value={input} /><button onClick={sendMessage}>send</button>
-      <div id="messages">{messages.map(msg => <div key={msg.message} className="message">{msg.author}: {msg.message}</div>)}</div>
-    </div>
+    // <div>
+    //   <Head>
+    //     <title>Admin View</title>
+    //   </Head>
+    //   <h1>Admin Chat View</h1>
+    //   <h3>{adminName} chatting with AnonymousUser{room}</h3>
+    //   <input placeholder="message" onChange={e => setInput(e.target.value)} value={input} /><button onClick={sendMessage}>send</button>
+    //   <div id="messages">{messages.map(msg => <div key={msg.message} className="message">{msg.author}: {msg.message}</div>)}</div>
+    // </div>
+    <Container>
+      <Text
+        h1
+        size={30}
+        weight="bold"
+      >
+        Hello, Agent!
+      </Text>
+      <Text
+        h2
+        size={25}
+        weight="bold"
+      >
+        You are now chatting with {room}.
+      </Text>
+      <Row
+        css={{ height: "85vh", overflow: "clip auto"}}
+      >
+        <Grid.Container gap={5}>
+          {messages.map(
+            msg =>
+              <Row justify={msg.author !== `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+                {
+                  console.log(msg.author)
+                }
+                <Card
+                  color={msg.author !== `AnonymousUser ${roomName}` ? "success" : "primary"}
+                  css={{ width: "max-content", margin: "0.25rem 0 0" }}
+                  key={msg.message}
+                >
+                  {msg.message}
+                  <Card.Footer>
+                    {msg.author !== `AnonymousUser ${roomName}` ? "You" : "Annonymous Client"}
+                  </Card.Footer>
+                </Card>
+              </Row>
+          )
+          }
+        </Grid.Container>
+      </Row>
+      <Spacer />
+      <Row>
+        <Input
+          css={{ width: "100%" }}
+          onChange={e => setInput(e.target.value)} value={input}
+          clearable
+          contentRightStyling={false}
+          placeholder="Type your message..."
+          contentRight={
+            <Button
+              auto
+              onClick={sendMessage}>
+              Send
+            </Button>}
+        />
+      </Row>
+    </Container>
+
   )
 }
 
