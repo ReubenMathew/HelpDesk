@@ -6,11 +6,7 @@ const { Server } = require("socket.io");
 const app = express();
 app.use(cors());
 
-let roomStore = [
-  "Room1",
-  "Room2",
-  "Room3"
-];
+let roomStore = [];
 
 const server = http.createServer(app);
 
