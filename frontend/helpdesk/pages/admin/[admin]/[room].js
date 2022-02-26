@@ -83,7 +83,7 @@ const Post = ({ room, adminName }) => {
         <Grid.Container gap={5}>
           {messages.map(
             msg =>
-              <Row justify={msg.author !== `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+              <Row key={msg.message} justify={msg.author !== `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
                 {
                   console.log(msg.author)
                 }
