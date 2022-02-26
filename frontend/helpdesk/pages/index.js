@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import uuid from 'react-uuid';
-import { Container, Input, Mail, Row, Text, Button, Modal, Password, Checkbox } from '@nextui-org/react';
+import { Container, Input, Row, Text, Button, Modal, Checkbox, Grid, Card, Col, Avatar } from '@nextui-org/react';
 export default function Home() {
 
   const router = useRouter();
@@ -27,74 +27,141 @@ export default function Home() {
 
   return (
     <Container>
-      <Row justify="center">
-        <Button
-          onClick={CreateChat}
-          size="lg"
-        >
-          <Text css={{ color: 'inherit' }} size={12} weight="bold" transform="uppercase">
-            Start Chatting Annonymously
-          </Text>
-        </Button>
-      </Row>
-      <Row>
-          <Button auto shadow onClick={handler}>
-            Open modal
-          </Button>
-          {/* <Modal
-            closeButton
-            aria-labelledby="modal-title"
-            open={visible}
-            onClose={closeHandler}
-          >
-            <Modal.Header>
-              <Text id="modal-title" size={18}>
-                Welcome to
-                <Text b size={18}>
-                  NextUI
+      <Row
+        justify="center"
+        css={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)"
+        }}
+      >
+        <Grid xs={12} sm={7}>
+          <Card cover css={{ w: '100%', p: 0 }}>
+            <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+              <Col>
+                <Text
+                  h1
+                  size={12}
+                  weight="bold"
+                  transform="uppercase"
+                  color="#9E9E9E"
+                >
+                  Help Desk
                 </Text>
-              </Text>
-            </Modal.Header>
-            <Modal.Body>
-              <Input
-                clearable
-                bordered
-                fullWidth
-                color="primary"
-                size="lg"
-                placeholder="Email"
-                contentLeft={<Mail />}
-              />
-              <Input
-                clearable
-                bordered
-                fullWidth
-                color="primary"
-                size="lg"
-                placeholder="Password"
-                contentLeft={<Password />}
-              />
-              <Row justify="space-between">
-                <Checkbox>
-                  <Text size={14}>
-                    Remember me
+                <Text h2 color="black">
+                  We Are Here For You!
+                </Text>
+                <Text h1 color="black">
+                  Click the button below to start chattin with us.
+                </Text>
+              </Col>
+            </Card.Header>
+            <Card.Body
+              css={{ height: "50vh" }}
+            >
+              <Row
+                justify="center"
+                css={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)"
+                }}
+              >
+                <Button
+                  onClick={CreateChat}
+                  size="lg"
+                >
+                  <Text css={{ color: 'inherit' }} size={12} weight="bold">
+                    Start Chatting Annonymously
                   </Text>
-                </Checkbox>
-                <Text size={14}>
-                  Forgot password?
-                </Text>
+                </Button>
               </Row>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button auto flat color="error" onClick={closeHandler}>
-                Close
-              </Button>
-              <Button auto onClick={closeHandler}>
-                Sign in
-              </Button>
-            </Modal.Footer>
-          </Modal> */}
-        </Row>
+            </Card.Body>
+            <Card.Footer
+              blur
+              css={{
+                position: 'absolute',
+                bgBlur: '#0f1114',
+                borderTop: '$borderWeights$light solid $gray700',
+                bottom: 0,
+                zIndex: 1
+              }}
+            >
+              <Row>
+                <Col>
+                  <Row>
+                    <Col span={3}>
+                      <Avatar squared text="Agen" size="md" />
+                    </Col>
+                    <Col>
+                      <Text color="#d1d1d1" size={12}>
+                        Are You a Help Agent?
+                      </Text>
+                      <Text color="#d1d1d1" size={12}>
+                        Login to Start Chatting with Clients.
+                      </Text>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col>
+                  <Row justify="flex-end">
+                    <Button auto onClick={handler}>
+                      <Text css={{ color: 'inherit' }} size={12} weight="bold">
+                        Login
+                      </Text>
+                    </Button>
+                    <Modal
+                      blur
+                      closeButton
+                      aria-labelledby="modal-title"
+                      open={visible}
+                      onClose={closeHandler}
+                    >
+                      <Modal.Header>
+                        <Text b size={18}>
+                          Agent Login
+                        </Text>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Input
+                          clearable
+                          color="primary"
+                          size="lg"
+                          label="Username"
+                          placeholder="Enter your username"
+                        />
+                        <Input.Password
+                          clearable
+                          bordered
+                          fullWidth
+                          color="primary"
+                          size="lg"
+                          label="Password"
+                          placeholder="Enter your password"
+                        />
+                        <Row justify="space-between">
+                          <Checkbox>
+                            <Text size={14}>
+                              Remember me
+                            </Text>
+                          </Checkbox>
+                        </Row>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button auto onClick={closeHandler}>
+                          Sign in
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </Row>
+                </Col>
+              </Row>
+            </Card.Footer>
+          </Card>
+        </Grid>
+      </Row>
     </Container>
   );
 }
