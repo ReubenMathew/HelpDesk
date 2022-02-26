@@ -1,7 +1,8 @@
-import Head from 'next/head'
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client'
+import { Container, Card, Grid, Row, Input, Button, Spacer } from '@nextui-org/react';
+
 
 let socket = false;
 
@@ -60,15 +61,45 @@ const Post = ({ room }) => {
   }
 
   return (
-    <div>
-      <Head>
-        <title>HelpDesk</title>
-      </Head>
-      <h1>Anonymous User View</h1>
-      <h3>AnonymousUser {roomName}</h3>
-      <input placeholder="message" onChange={e => setInput(e.target.value)} value={input} /><button onClick={sendMessage}>send</button>
-      <div id="messages">{messages.map(msg => <div key={msg.message} className="message">User {msg.author}: {msg.message}</div>)}</div>
-    </div>
+    <Container>
+      <h3>Hello, {roomName}</h3>
+      <Row>
+        <Grid.Container gap={5}>
+          {messages.map(
+            msg =>
+              <Row justify= {msg.from === "AnonymousUser ${roomName}" ? "flex-start" : "flex-end"}>
+                <Card
+                  color= {msg.from === "AnonymousUser ${roomName}" ? "primary" : "success"}
+                  css={{ width: "max-content", margin: "0.25rem 0 0" }}
+                  key={msg.message}
+                >
+                  {msg.message}
+                  <Card.Footer>
+                    {msg.from === "AnonymousUser ${roomName}" ? msg.from : "You"}
+                  </Card.Footer>
+                </Card>
+              </Row>
+          )
+          }
+        </Grid.Container>
+      </Row>
+      <Spacer/>
+      <Row>
+          <Input
+            css={{ width: "100%"}}
+            onChange={e => setInput(e.target.value)} value={input}
+            clearable
+            contentRightStyling={false}
+            placeholder="Type your message..."
+            contentRight={
+              <Button
+                auto
+                onClick={sendMessage}>
+                  Send
+              </Button>}
+          />
+      </Row>
+    </Container>
   )
 }
 
