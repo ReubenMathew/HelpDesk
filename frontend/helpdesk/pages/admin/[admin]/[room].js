@@ -59,7 +59,7 @@ const Post = ({ room, adminName }) => {
       <h1>Admin Chat View</h1>
       <h3>{adminName} chatting with AnonymousUser{room}</h3>
       <input placeholder="message" onChange={e => setInput(e.target.value)} value={input} /><button onClick={sendMessage}>send</button>
-      <div id="messages">{messages.map(msg => <div className="message">{msg.author}: {msg.message}</div>)}</div>
+      <div id="messages">{messages.map(msg => <div key={msg.message} className="message">{msg.author}: {msg.message}</div>)}</div>
     </div>
   )
 }
