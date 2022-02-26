@@ -37,11 +37,11 @@ export default function Home() {
           </Text>
         </Button>
       </Row>
-      {/* <Row>
+      <Row>
           <Button auto shadow onClick={handler}>
             Open modal
           </Button>
-          <Modal
+          {/* <Modal
             closeButton
             aria-labelledby="modal-title"
             open={visible}
@@ -93,8 +93,8 @@ export default function Home() {
                 Sign in
               </Button>
             </Modal.Footer>
-          </Modal>
-        </Row> */}
+          </Modal> */}
+        </Row>
     </Container>
   );
 }
