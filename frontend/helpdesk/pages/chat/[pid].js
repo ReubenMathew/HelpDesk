@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 
@@ -11,6 +12,20 @@ export async function getServerSideProps({ params }) {
 }
 
 const Post = ({ room }) => {
+
+  const router = useRouter();
+
+  useEffect(() => {
+    router.beforePopState(({ url, as, options }) => {
+      fetch(
+        `${process.env.BACKEND_URL}/${room}`,
+        {
+          method: 'DELETE'
+        }
+      );
+      return true
+    })
+  }, [])
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
