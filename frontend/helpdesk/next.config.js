@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
+  env: {
+    BACKEND_URL: process.env.BACKEND_URL
+  },
   reactStrictMode: true,
-}
-
-module.exports = nextConfig
+};
