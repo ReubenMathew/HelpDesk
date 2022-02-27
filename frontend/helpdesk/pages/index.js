@@ -18,13 +18,7 @@ export default function Home() {
     ).then(router.push(`/chat/${newUuid}`));
 
   }
-  const [visible, setVisible] = React.useState(false);
-  const handler = () => setVisible(true);
-  const closeHandler = () => {
-    setVisible(false);
-    console.log('closed');
-  };
-
+  
   const [visible, setVisible] = React.useState(false);
   const handler = () => setVisible(true);
   const [username, setUsername] = useState("");
