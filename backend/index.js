@@ -56,8 +56,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const username = req.query.username;
+  const password = req.query.password;
   await client.get(username).then(storedPassword => {
     if (storedPassword == null) {
       res.json({
