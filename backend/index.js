@@ -3,7 +3,8 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const redis = require("redis");
-const e = require("express");
+
+console.log(process.env.REDIS_URL);
 
 const app = express();
 const client = redis.createClient({
