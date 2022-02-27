@@ -68,7 +68,7 @@ const Post = ({ room }) => {
         size={30}
         weight="bold"
       >
-        Hello, Annonymous User!
+        Hello, Anonymous User!
       </Text>
       <Row
         css={{ height: "85vh", overflow: "clip auto"}}

@@ -53,7 +53,7 @@ export default function Home() {
                   We Are Here For You!
                 </Text>
                 <Text h1 color="black">
-                  Click the button below to start chattin with us.
+                  Click the button below to start chatting with us.
                 </Text>
               </Col>
             </Card.Header>
@@ -74,7 +74,7 @@ export default function Home() {
                   size="lg"
                 >
                   <Text css={{ color: 'inherit' }} size={12} weight="bold">
-                    Start Chatting Annonymously
+                    Start Chatting Anonymously
                   </Text>
                 </Button>
               </Row>
@@ -93,7 +93,7 @@ export default function Home() {
                 <Col>
                   <Row>
                     <Col span={3}>
-                      <Avatar squared text="Agen" size="md" />
+                      <Avatar squared text="A" size="md" />
                     </Col>
                     <Col>
                       <Text color="#d1d1d1" size={12}>
