@@ -10,20 +10,17 @@
   - [Development](#development)
     - [Building from Source](#building-from-source)
 
-## Features
-(add features here)
+## Run Locally
+### Frontend Service
+1. Clone or download the repository 
+2. `cd frontend/helpdesk`
+3. Create a `.env.local` file with the following content `BACKEND_URL=https://backend-development-b7d5.up.railway.app`
+4. `npm install`
+5. `npx next dev`
+6. Open browser to `localhost:3000`
 
-
-## Installation
-Helpdesk Application can be either deployed via Docker or Run on any GNU/Unix compatible system with the required dependencies installed:
-
-### Docker
-(add instructions here)
-
-### Raw
-(add instructions here)
-
-## Development
-
-### Building from Source
-(add instructions here)
+*Note: To login as an admin use the following credentials...*
+```
+username=admin
+password=password
+```
