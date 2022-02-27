@@ -14,7 +14,7 @@
 ### Frontend Service
 1. Clone or download the repository 
 2. `cd frontend/helpdesk`
-3. Create a `.env.local` file with the following content `BACKEND_URL=https://backend-development-b7d5.up.railway.app`
+3. `echo BACKEND_URL=https://backend-development-b7d5.up.railway.app > .env.local`
 4. `npm install`
 5. `npx next dev`
 6. Open browser to `localhost:3000`
