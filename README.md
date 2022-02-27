@@ -1,5 +1,5 @@
 # HelpDesk Application
-
+By: Reuben Ninan (216315509), John Stegmaier (213940226), Amro Al-Salih (218287334), Orion Nelson (216305377)
 
 ## Table of Contents
 - [HelpDesk Application](#helpdesk-application)
