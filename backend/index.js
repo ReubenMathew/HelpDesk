@@ -11,7 +11,8 @@ const client = redis.createClient({
 });
 
 client.on('error', err => {
-  console.log('Error ' + err, process.env.REDIS_URL);
+  console.log("REDIS URL:", process.env.REDIS_URL);
+  // console.log('Error ' + err, process.env.REDIS_URL);
 });
 
 // express middleware
