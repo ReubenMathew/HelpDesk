@@ -166,7 +166,7 @@ export default function Home() {
                           </Checkbox>
                         </Row>
                       </Modal.Body>
-                      <Modal.Footer>=
+                      <Modal.Footer>
                         <Button auto onClick={signInHandler}>
                           Sign in
                         </Button>
