@@ -82,16 +82,16 @@ app.get('/login', async (req, res) => {
   });
 });
 
-app.post('/register', async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  if (await client.exists(username)) {
-    res.sendStatus(403);
-  } else {
-    await client.set(username, password);
-    res.sendStatus(200);
-  }
-})
+// app.post('/register', async (req, res) => {
+//   const username = req.body.username;
+//   const password = req.body.password;
+//   if (await client.exists(username)) {
+//     res.sendStatus(403);
+//   } else {
+//     await client.set(username, password);
+//     res.sendStatus(200);
+//   }
+// });
 
 app.post('/:room', (req, res) => {
   console.log("Creating room", req.params.room);
