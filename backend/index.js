@@ -4,16 +4,13 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const redis = require("redis");
 
-console.log(process.env.REDIS_URL);
-
 const app = express();
 const client = redis.createClient({
   url: process.env.REDIS_URL
 });
 
 client.on('error', err => {
-  console.log("REDIS URL:", process.env.REDIS_URL);
-  // console.log('Error ' + err, process.env.REDIS_URL);
+  console.log('Error ' + err);
 });
 
 // express middleware
