@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import uuid from 'react-uuid';
 import { Container, Input, Row, Text, Button, Modal, Checkbox, Grid, Card, Col, Avatar } from '@nextui-org/react';
@@ -23,6 +23,27 @@ export default function Home() {
   const closeHandler = () => {
     setVisible(false);
     console.log('closed');
+  };
+
+  const [visible, setVisible] = React.useState(false);
+  const handler = () => setVisible(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const closeHandler = () => {
+    setVisible(false);
+    console.log('closed');
+  };
+  async function signInHandler() {
+    await fetch(`${process.env.BACKEND_URL}/login?username=${username}&password=${password}`).then((res) => {
+      return res.json();
+    }).then(res => {
+      if (res.authenticated) {
+        closeHandler();
+        router.push(`/admin/${username}`)
+      } else {
+        console.log("User not found or wrong password");
+      }
+    });
   };
 
   return (
@@ -131,6 +152,7 @@ export default function Home() {
                           size="lg"
                           label="Username"
                           placeholder="Enter your username"
+                          onChange={e => setUsername(e.target.value)}
                         />
                         <Input.Password
                           clearable
@@ -140,6 +162,7 @@ export default function Home() {
                           size="lg"
                           label="Password"
                           placeholder="Enter your password"
+                          onChange={e => setPassword(e.target.value)}
                         />
                         <Row justify="space-between">
                           <Checkbox>
@@ -149,8 +172,8 @@ export default function Home() {
                           </Checkbox>
                         </Row>
                       </Modal.Body>
-                      <Modal.Footer>
-                        <Button auto onClick={closeHandler}>
+                      <Modal.Footer>=
+                        <Button auto onClick={signInHandler}>
                           Sign in
                         </Button>
                       </Modal.Footer>
