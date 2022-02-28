@@ -1,0 +1,19 @@
+Load up an instance of our web app through our public url https://help-desk-psi.vercel.app or build it from source (see README.md for instructions)
+
+Anonymous User Instructions
+1. Click Start Chatting Anonymously
+2. Note the unique id of the chat room you have entered in the URL path (e.g. https://help-desk-psi.vercel.app/chat/a86a173-8dc8-a7a3-330-7e02b368b43)
+3. Wait for an Agent to join your chatroom and help you with your issue, keep your window open and present on your chat page, if you leave the page your chat is closed
+4. Once an Agent joins your session you are notified with a chat message
+5. Proceed to communicate with the Agent using the chat box below and using the Send button to transmit messages to the Agent
+
+HelpDesk Agent Instructions
+1. Click Login
+2. Use the following credentials to login, after inputting your credentials click Sign In
+	username: admin
+	password: password
+3. You are redirected to the admin dashboard which shows all anonymous users waiting in queue for you to help them
+Note: if you do not see any users, try opening a new tab/window and starting a new Anonymous chat with the Anonymous User Instructions above
+4. To enter into a chat with a user, click the button in the list
+Note: if you want to ensure that you are engaging in a chat with an anonymous user you have created for testing, ensure the UID of the chat (found in the url path) is equivalent to the UID shown in the admin dashboard
+5. Proceed to communicate with the Anonymous User using the chat box below and using the Send button to transmit messages to the user
