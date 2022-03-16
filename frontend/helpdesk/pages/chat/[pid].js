@@ -38,13 +38,20 @@ const Post = ({ room }) => {
       socket = io(process.env.BACKEND_URL);
     }
     socket.emit("join_room", roomName);
-  }, [])
+  }, []);
 
   useEffect(() => {
     socket.on("receive_message", (msg) => {
       console.log(msg);
       setMessages([...messages, msg]);
-    })
+    });
+  }, [messages]);
+
+  useEffect(() => {
+    socket.on("receive_image", (img) => {
+      console.log(img);
+      setMessages([...messages, img]);
+    });
   }, [messages]);
 
   const sendMessage = () => {
@@ -61,15 +68,31 @@ const Post = ({ room }) => {
     setInput("");
   }
 
-  const sendImage = (image) => {
-    console.log(image);
+  const sendImage = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await convertToBase64(file);
     const Image = {
       room: roomName,
-      image: image,
+      message: base64,
       author: `AnonymousUser ${roomName}`
     }
+    console.log(Image);
     socket.emit("send_image", Image);
   }
+
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
 
   return (
     <Container>
@@ -121,13 +144,15 @@ const Post = ({ room }) => {
             </Button>}
         />
       </Row>
-      <FileBase64
-	multiple={false}
-	onDone={() => sendImage(this)}
+      <input
+        type="file"
+        label="Image"
+        name="fileUpload"
+        accept=".jpeg, .png, .jpg"
+        onChange={(e) => sendImage(e)}
       />
     </Container>
   )
 }
-
 
 export default Post;
