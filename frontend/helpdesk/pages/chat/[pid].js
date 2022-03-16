@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client'
 import { Container, Card, Grid, Row, Input, Button, Spacer, Text } from '@nextui-org/react';
+import FileBase64 from 'react-file-base64';
 
 
 let socket = false;
@@ -60,6 +61,15 @@ const Post = ({ room }) => {
     setInput("");
   }
 
+  const sendImage = (image) => {
+    console.log(image);
+    const Image = {
+      room: roomName,
+      image: image,
+      author: `AnonymousUser ${roomName}`
+    }
+    socket.emit("send_image", Image);
+  }
 
   return (
     <Container>
@@ -111,6 +121,10 @@ const Post = ({ room }) => {
             </Button>}
         />
       </Row>
+      <FileBase64
+	multiple={false}
+	onDone={() => sendImage(this)}
+      />
     </Container>
   )
 }
