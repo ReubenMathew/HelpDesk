@@ -45,7 +45,9 @@ io.on("connection", (socket) => {
   });
 
 	socket.on("send_image", (data) => {
-		console.log("Image recieved", data, data.room);
+		console.log("Image received from", data.author, data.room);
+    socket.to(data.room).emit("receive_image", data);
+    console.log("Image sent to", data.room);
 	});
 
   socket.on("disconnect", () => {

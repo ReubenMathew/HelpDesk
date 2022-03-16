@@ -29,13 +29,20 @@ const Post = ({ room, adminName }) => {
       author: "System"
     }
     socket.emit("send_message", Message);
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    socket.on("receive_image", (img) => {
+      console.log(img);
+      setMessages([...messages, img]);
+    });
+  }, [messages]);
 
   useEffect(() => {
     socket.on("receive_message", (msg) => {
       console.log(msg);
       setMessages([...messages, msg]);
-    })
+    });
   }, [messages]);
 
   const sendMessage = () => {
@@ -74,7 +81,7 @@ const Post = ({ room, adminName }) => {
         <Grid.Container gap={5}>
           {messages.map(
             msg =>
-              <Row key={msg.message} justify={msg.author !== `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+              <Row key={msg.message.substring(0,16)} justify={msg.author !== `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
                 {
                   console.log(msg.author)
                 }
