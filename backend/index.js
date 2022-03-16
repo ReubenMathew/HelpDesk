@@ -6,7 +6,8 @@ const redis = require("redis");
 
 const app = express();
 const client = redis.createClient({
-  url: process.env.REDIS_URL
+	// TODO(Reuben): Remove this before pushing	  
+  url: 'redis://default:lr54VM5jTJjGgng5Fz03@containers-us-west-27.railway.app:8021'
 });
 
 client.on('error', err => {
@@ -42,6 +43,10 @@ io.on("connection", (socket) => {
     console.log(data, data.room);
     socket.to(data.room).emit("receive_message", data);
   });
+
+	socket.on("send_image", (data) => {
+		console.log("Image recieved", data, data.room);
+	});
 
   socket.on("disconnect", () => {
     console.log("A user has left the platform");
