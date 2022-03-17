@@ -61,7 +61,8 @@ const Post = ({ room }) => {
     const Message = {
       room: roomName,
       message: input,
-      author: `AnonymousUser ${roomName}`
+      author: `AnonymousUser ${roomName}`,
+      isImage: false
     }
     socket.emit("send_message", Message);
     setMessages([...messages, Message]);
@@ -74,7 +75,8 @@ const Post = ({ room }) => {
     const Image = {
       room: roomName,
       message: base64,
-      author: `AnonymousUser ${roomName}`
+      author: `AnonymousUser ${roomName}`,
+      isImage: true
     }
     console.log(Image);
     socket.emit("send_image", Image);
