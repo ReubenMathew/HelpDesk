@@ -52,7 +52,8 @@ const Post = ({ room, adminName }) => {
     const Message = {
       room: roomName,
       message: input,
-      author: adminName
+      author: adminName,
+      isImage: false
     }
     socket.emit("send_message", Message);
     setMessages([...messages, Message]);
@@ -81,7 +82,7 @@ const Post = ({ room, adminName }) => {
         <Grid.Container gap={5}>
           {messages.map(
             msg =>
-              <Row key={msg.message.substring(0,16)} justify={msg.author !== `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+              <Row key={msg.message.substring(0,16)} justify={msg.author !== `Anonymous User ${roomName}` ? "flex-end" : "flex-start"}>
                 {
                   console.log(msg.author)
                 }
@@ -90,9 +91,9 @@ const Post = ({ room, adminName }) => {
                   css={{ width: "max-content", margin: "0.25rem 0 0" }}
                   key={msg.message}
                 >
-                  {msg.message}
+                  {msg.isImage ? <img src={msg.message} /> : msg.message }
                   <Card.Footer>
-                    {msg.author !== `AnonymousUser ${roomName}` ? "You" : "Annonymous Client"}
+                    {msg.author !== `AnonymousUser ${roomName}` ? "You" : "Anonymous Client"}
                   </Card.Footer>
                 </Card>
               </Row>

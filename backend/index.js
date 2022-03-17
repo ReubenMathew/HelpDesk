@@ -7,7 +7,7 @@ const redis = require("redis");
 const app = express();
 const client = redis.createClient({
 	// TODO(Reuben): Remove this before pushing	  
-  url: 'redis://default:lr54VM5jTJjGgng5Fz03@containers-us-west-27.railway.app:8021'
+  url: process.env.REDIS_URL
 });
 
 client.on('error', err => {
