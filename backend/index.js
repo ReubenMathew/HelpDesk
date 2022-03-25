@@ -71,8 +71,8 @@ const authorization = (req, res, next) => {
   }
   try {
     const data = jwt.verify(token, JWT_SECRET);
-    req.userId = data.id;
-    req.userRole = data.role;
+    req.room = data.room;
+    req.room = data.role;
     return next();
   } catch {
     return res.status(403);
@@ -91,24 +91,34 @@ app.get('/', (req, res) => {
 app.get('/login', async (req, res) => {
   const username = req.query.username;
   const password = req.query.password;
+
+  const token = jwt.sign({ room: username, role: 'admin' }, JWT_SECRET);
   await client.get(username).then(storedPassword => {
     if (storedPassword == null) {
-      res.json({
-        authenticated: false,
-        reason: "No user found"
-      });
+      res
+        .status(403)
+        .json({
+          authenticated: false,
+          reason: "No user found"
+        });
       return;
     }
     if (storedPassword == password) {
-      res.json({
-        authenticated: true
-      });
-      return;
+      res
+        .cookie("access_token", token, {
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'none'
+        })
+        .json({
+          authenticated: true
+        })
+        .status(200);
+        return;
     } else {
       res.json({
         authenticated: false,
         reason: "Incorrect password"
-      });
+      }).status(403);
       return;
     }
   });
@@ -137,7 +147,6 @@ app.post("/verifyRoom", authorization, (req, res) => {
 });
 
 app.post('/enqueue', (req, res) => {
-  console.log("Enqueue", req.query);
   const room = req.query.room;
   const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
   return res

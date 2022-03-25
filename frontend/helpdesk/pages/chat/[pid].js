@@ -24,12 +24,10 @@ export async function getServerSideProps({ params, req }) {
     if (res.authentication) {
       return true;
     }
-    console.log(authenticated)
     return false;
   }).catch(e => {
     return false;
   });
-  console.log("User is authenticated", authenticated)
   if (authenticated != true) {
     return { props: { room }, redirect: { destination: '/chat/error' } }
   }
@@ -39,8 +37,6 @@ export async function getServerSideProps({ params, req }) {
 const Post = ({ room }) => {
   const router = useRouter();
   const [cookies, setCookie] = useCookies();
-
-  console.log("COOKIES", cookies);
 
   useEffect(() => {
     router.beforePopState(({ url, as, options }) => {
