@@ -1,21 +1,32 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import io from 'socket.io-client'
+import { useCookies } from 'react-cookie';
+import io from 'socket.io-client';
 import { Container, Card, Grid, Row, Input, Button, Spacer, Text } from '@nextui-org/react';
-import FileBase64 from 'react-file-base64';
-
 
 let socket = false;
 
-export async function getServerSideProps({ params }) {
-  const room = params.pid
-  // Pass data to the page via props
-  return { props: { room } }
+export async function getServerSideProps({ params, req }) {
+  const cookies = req.headers.cookie;
+  const room = params.pid;
+  console.log()
+  // if (!cookies.room || cookies.room != room) {
+  //   return { props: { room }, redirect: { destination: '/chat/error' } };
+  // }
+  return { props: { room } };
 }
 
 const Post = ({ room }) => {
 
   const router = useRouter();
+  const [cookies, setCookie] = useCookies();
+
+  console.log(cookies);
+  // useEffect(() => {
+  //   if (!cookies.room || cookies.room != room) {
+  //     router.push("/chat/error");
+  //   }
+  // });
 
   useEffect(() => {
     router.beforePopState(({ url, as, options }) => {
@@ -106,7 +117,7 @@ const Post = ({ room }) => {
         Hello, Anonymous User!
       </Text>
       <Row
-        css={{ height: "85vh", overflow: "clip auto"}}
+        css={{ height: "85vh", overflow: "clip auto" }}
       >
         <Grid.Container gap={5}>
           {messages.map(
