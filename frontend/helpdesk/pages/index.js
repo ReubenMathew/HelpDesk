@@ -7,18 +7,26 @@ export default function Home() {
   const router = useRouter();
 
   var CreateChat = () => {
-
     var newUuid = uuid();
-
     fetch(
-      `${process.env.BACKEND_URL}/${newUuid}`,
+      `${process.env.BACKEND_URL}/enqueue`,
       {
         method: 'POST'
       }
-    ).then(router.push(`/chat/${newUuid}`));
-
+    )
+      .then(res => res)
+      .then(res => {
+        fetch(
+          `${process.env.BACKEND_URL}/${newUuid}`,
+          {
+            method: 'POST',
+            credentials: 'include',
+          }
+        )
+        .then(router.push(`/chat/${newUuid}`))
+      });
   }
-  
+
   const [visible, setVisible] = React.useState(false);
   const handler = () => setVisible(true);
   const [username, setUsername] = useState("");
