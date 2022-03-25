@@ -1,17 +1,30 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useCookies } from 'react-cookie';
 import uuid from 'react-uuid';
 import { Container, Input, Row, Text, Button, Modal, Checkbox, Grid, Card, Col, Avatar } from '@nextui-org/react';
+
 export default function Home() {
 
-  const router = useRouter();
+  const router = useRouter();  
+  const [visible, setVisible] = React.useState(false);
+  const handler = () => setVisible(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [cookies, setCookie] = useCookies();
 
+  const closeHandler = () => {
+    setVisible(false);
+    console.log('closed');
+  };
+  
   var CreateChat = () => {
     var newUuid = uuid();
     fetch(
-      `${process.env.BACKEND_URL}/enqueue`,
+      `${process.env.BACKEND_URL}/enqueue?room=${newUuid}`,
       {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include',
       }
     )
       .then(res => res)
@@ -27,14 +40,6 @@ export default function Home() {
       });
   }
 
-  const [visible, setVisible] = React.useState(false);
-  const handler = () => setVisible(true);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const closeHandler = () => {
-    setVisible(false);
-    console.log('closed');
-  };
   async function signInHandler() {
     await fetch(`${process.env.BACKEND_URL}/login?username=${username}&password=${password}`).then((res) => {
       return res.json();

@@ -5,14 +5,14 @@ const { Server } = require("socket.io");
 const redis = require("redis");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const jwtDecode = require("jwt-decode");
+const e = require("express");
 
-//TODO(Reuben): Change this before committing
-const JWT_SECRET = "MY_SECRET";
+const JWT_SECRET = process.env.JWT_SECRET || 'SECRET';
 
 const app = express();
 const client = redis.createClient({
-  //TODO(Reuben): Change this before committing
-  url: 'redis://default:6sqjQ7bIiFWbRMicd4YS@containers-us-west-27.railway.app:7372'
+  url: process.env.REDIS_URL
 });
 
 client.on('error', err => {
@@ -73,20 +73,19 @@ const authorization = (req, res, next) => {
     const data = jwt.verify(token, JWT_SECRET);
     req.userId = data.id;
     req.userRole = data.role;
-    console.log(data.id, data.role);
     return next();
   } catch {
-    return res.access_tokensendStatus(403);
+    return res.status(403);
   }
 }
 
 // REST Endpoints
 app.get('/', (req, res) => {
   return res
-          .status(200)
-          .json({
-            rooms: roomStore
-          });
+    .status(200)
+    .json({
+      rooms: roomStore
+    });
 });
 
 app.get('/login', async (req, res) => {
@@ -115,15 +114,38 @@ app.get('/login', async (req, res) => {
   });
 });
 
-app.get("/protected", authorization, (req, res) => {
-  return res.json({ user: { id: req.userId, role: req.userRole } });
+// verification endpoint for JWT tokens
+app.post("/verifyRoom", authorization, (req, res) => {
+  const token = req.cookies.access_token;
+  const room = req.query.room;
+  const data = jwt.verify(token, JWT_SECRET);
+  const token_role = data.role;
+  const token_room = data.room;
+  console.log(data, token_role, "attempting to join room", room, "with", token_room);
+  if (token_room === room || token_role === 'admin') {
+    return res
+      .status(200)
+      .json({
+        authentication: true
+      });
+  }
+  return res
+    .status(403)
+    .json({
+      authentication: false
+    });
 });
 
 app.post('/enqueue', (req, res) => {
-  const token = jwt.sign({ id: 1, role: "user"}, JWT_SECRET);
+  console.log("Enqueue", req.query);
+  const room = req.query.room;
+  const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
   return res
     .status(201)
-    .cookie("access_token", token, {})
+    .cookie("access_token", token, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none'
+    })
     .json({
       message: "Queued successfully"
     });
@@ -137,16 +159,14 @@ app.post('/:room', authorization, (req, res) => {
   }
   res
     .status(201)
-    .cookie("room", roomToAdd, {})
     .json({
       message: "Successfully entered room"
     });
 });
 
-app.delete('/:room', (req, res) => {
+app.delete('/:room', authorization, (req, res) => {
   console.log("Deleting room", req.params.room);
   roomStore = roomStore.filter(room => room != req.params.room);
-  res.clearCookie("room");
   res.sendStatus(202);
 })
 

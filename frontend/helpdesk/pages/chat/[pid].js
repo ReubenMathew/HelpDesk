@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import io from 'socket.io-client';
+import jwt from 'jwt-decode';
 import { Container, Card, Grid, Row, Input, Button, Spacer, Text } from '@nextui-org/react';
 
 let socket = false;
@@ -9,24 +10,37 @@ let socket = false;
 export async function getServerSideProps({ params, req }) {
   const cookies = req.headers.cookie;
   const room = params.pid;
-  console.log()
-  // if (!cookies.room || cookies.room != room) {
-  //   return { props: { room }, redirect: { destination: '/chat/error' } };
-  // }
+  let authenticated = await fetch(`${process.env.BACKEND_URL}/verifyRoom?room=${room}`,
+    {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        cookie: cookies
+      }
+    }
+  ).then(res => {
+    return res.json();
+  }).then((res) => {
+    if (res.authentication) {
+      return true;
+    }
+    console.log(authenticated)
+    return false;
+  }).catch(e => {
+    return false;
+  });
+  console.log("User is authenticated", authenticated)
+  if (authenticated != true) {
+    return { props: { room }, redirect: { destination: '/chat/error' } }
+  }
   return { props: { room } };
 }
 
 const Post = ({ room }) => {
-
   const router = useRouter();
   const [cookies, setCookie] = useCookies();
 
-  console.log(cookies);
-  // useEffect(() => {
-  //   if (!cookies.room || cookies.room != room) {
-  //     router.push("/chat/error");
-  //   }
-  // });
+  console.log("COOKIES", cookies);
 
   useEffect(() => {
     router.beforePopState(({ url, as, options }) => {
