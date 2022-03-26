@@ -25,6 +25,9 @@ export default function Home() {
       {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
     )
       .then(res => res)
