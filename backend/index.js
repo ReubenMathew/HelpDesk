@@ -24,14 +24,29 @@ client.on('error', err => {
   console.log('Error ' + err);
 });
 
+
+const allowedOrigins = ['https://help-desk-3ajxsxm8a-reubenmathew.vercel.app', 'http://localhost:3000'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    callback(null, true);
+    // if (allowedOrigins.indexOf(origin) !== -1) {
+    //   callback(null, true)
+    // } else {
+    //   callback(new Error('Not allowed by CORS'))
+    // }
+  }
+}
+
 // express middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use(function(req, res, next) {
-  const origin = req.headers.origin;
-  res.setHeader('Access-Control-Allow-Origin', origin);
+  console.log(req.headers);
+  if (req.headers.origin) {
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+  }
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST", "DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -195,6 +210,6 @@ app.delete('/:room', authorization, (req, res) => {
 })
 
 server.listen(8080, () => {
-  console.log("Server is running...");
+  console.log("Server is running on port 8080...");
   client.connect();
 });
