@@ -94,9 +94,9 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/login', async (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
+app.post('/login', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
 
   const token = jwt.sign({ role: 'admin' }, JWT_SECRET);
   await client.get(username).then(storedPassword => {
