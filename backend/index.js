@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'SECRET';
 
 const app = express();
 const client = redis.createClient({
-  url: process.env.REDIS_URL
+  url: process.env.REDIS_URL || 'redis://default:6sqjQ7bIiFWbRMicd4YS@containers-us-west-27.railway.app:7372'
 });
 
 client.on('error', err => {
@@ -110,6 +110,7 @@ app.get('/login', async (req, res) => {
       return;
     }
     if (storedPassword == password) {
+      console.log(username, "logged in", token);
       res
         .cookie("access_token", token, {
           secure: process.env.NODE_ENV === 'production',
