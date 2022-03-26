@@ -31,7 +31,7 @@ app.use(function(req, res, next) {
        res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept", "Authorization");
   next();
 });
 
@@ -160,6 +160,7 @@ app.post("/verifyRoom", authorization, (req, res) => {
 app.post('/enqueue', (req, res) => {
   const room = req.query.room;
   const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
+  console.log("User has been queued to", room);
   return res
     .status(201)
     .cookie("access_token", token, {
