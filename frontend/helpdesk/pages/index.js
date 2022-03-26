@@ -24,6 +24,7 @@ export default function Home() {
       `${process.env.BACKEND_URL}/enqueue?room=${newUuid}`,
       {
         method: 'POST',
+        credentials: 'include',
       }
     )
       .then(res => res)
@@ -32,6 +33,7 @@ export default function Home() {
           `${process.env.BACKEND_URL}/${newUuid}`,
           {
             method: 'POST',
+            credentials: 'include',
           }
         )
         .then(router.push(`/chat/${newUuid}`))
