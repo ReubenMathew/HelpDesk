@@ -7,6 +7,11 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const jwtDecode = require("jwt-decode");
 const e = require("express");
+const dotenv = require("dotenv")
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
