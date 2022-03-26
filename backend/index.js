@@ -19,6 +19,13 @@ client.on('error', err => {
   console.log('Error ' + err);
 });
 
+//rate limiter being configured here
+const RateLimit = require('express-rate-limit');
+const limiter = new RateLimit({
+  windowMS: 60*100, //this enforces a 1-minute window for our rate limiter
+  max: 5              //> of which we can only make 5 requests in that 1 minute
+})
+
 // express middleware
 app.use(cors());
 app.use(express.json());
@@ -84,6 +91,8 @@ const authorization = (req, res, next) => {
     return res.status(403);
   }
 }
+
+app.use(limiter); //applying a rate limiter to the application
 
 // REST Endpoints
 app.get('/', (req, res) => {
