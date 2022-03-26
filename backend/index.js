@@ -8,11 +8,11 @@ const jwt = require("jsonwebtoken");
 const jwtDecode = require("jwt-decode");
 const e = require("express");
 
-const JWT_SECRET = process.env.JWT_SECRET || 'SECRET';
+const JWT_SECRET = process.env.JWT_SECRET || '';
 
 const app = express();
 const client = redis.createClient({
-  url: process.env.REDIS_URL || 'redis://default:6sqjQ7bIiFWbRMicd4YS@containers-us-west-27.railway.app:7372'
+  url: process.env.REDIS_URL || ''
 });
 
 client.on('error', err => {
