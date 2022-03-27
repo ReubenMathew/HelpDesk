@@ -1,3 +1,4 @@
+const rateLimit = require('express-rate-limit')
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
@@ -23,14 +24,23 @@ const client = redis.createClient({
 client.on('error', err => {
   console.log('Error ' + err);
 });
+
+//rate limiter being configured here
+const limiter = rateLimit({
+  windowMS: 60 * 100, //this enforces a 1-minute window for our rate limiter
+  max: 5              //> of which we can only make 5 requests in that 1 minute
+});
+
 // express middleware
 app.use(cors({
   credentials: true,
   origin: true
 }));
 app.use(express.json());
+app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieParser());
+app.use(limiter);
 
 let roomStore = [];
 
@@ -86,6 +96,8 @@ const authorization = (req, res, next) => {
   }
 }
 
+
+
 // REST Endpoints
 app.get('/', (req, res) => {
   return res
@@ -96,10 +108,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', async (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
+  const username = req.queryString('username');
+  const password = req.queryString('password');
 
   const token = jwt.sign({ role: 'admin' }, JWT_SECRET);
+  //This needs fixing as per https://github.com/ReubenMathew/HelpDesk/security/code-scanning/130
   await client.get(username).then(storedPassword => {
     if (storedPassword == null) {
       res
