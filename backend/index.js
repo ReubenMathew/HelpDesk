@@ -1,3 +1,4 @@
+const rateLimit = require('express-rate-limit')
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
@@ -20,17 +21,17 @@ client.on('error', err => {
 });
 
 //rate limiter being configured here
-const RateLimit = require('express-rate-limit');
-const limiter = new RateLimit({
-  windowMS: 60*100, //this enforces a 1-minute window for our rate limiter
+const limiter = rateLimit({
+  windowMS: 60 * 100, //this enforces a 1-minute window for our rate limiter
   max: 5              //> of which we can only make 5 requests in that 1 minute
-})
+});
 
 // express middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieParser());
+app.use(limiter);
 app.use(function(req, res, next) {
   const origin = req.headers.origin;
   res.setHeader('Access-Control-Allow-Origin', origin);
@@ -94,7 +95,7 @@ const authorization = (req, res, next) => {
   }
 }
 
-app.use(limiter); //applying a rate limiter to the application
+
 
 // REST Endpoints
 app.get('/', (req, res) => {
