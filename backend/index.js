@@ -181,7 +181,7 @@ app.post("/verifyRoom", authorization, (req, res) => {
     });
 });
 
-app.post('/:room', authorization, (req, res) => {
+app.post('/:room', (req, res) => {
   console.log("Creating room", req.params.room);
   const roomToAdd = req.params.room
   if (!roomStore.includes(roomToAdd)) {
@@ -194,7 +194,7 @@ app.post('/:room', authorization, (req, res) => {
     });
 });
 
-app.delete('/:room', authorization, (req, res) => {
+app.delete('/:room', (req, res) => {
   console.log("Deleting room", req.params.room);
   roomStore = roomStore.filter(room => room != req.params.room);
   res.sendStatus(202);
