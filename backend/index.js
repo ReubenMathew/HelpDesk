@@ -143,7 +143,8 @@ app.post('/enqueue', (req, res) => {
       sameSite: 'none'
     })
     .json({
-      message: "Queued successfully"
+      message: "Queued successfully",
+      token: token
     });
 });
 

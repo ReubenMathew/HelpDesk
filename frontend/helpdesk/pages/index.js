@@ -32,9 +32,13 @@ export default function Home() {
     )
       .then(res => res)
       .then(res => {
-        //TODO(Reuben): Remove in production
         console.log("Response headers", res.headers.keys())
         console.log("COOKIES:", cookies);
+        setCookie("access_token", res.body.token, {
+          path: "/",
+          maxAge: 3600,
+          sameSite: true
+        });
         fetch(
           `${process.env.BACKEND_URL}/${newUuid}`,
           {
