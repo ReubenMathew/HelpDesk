@@ -182,7 +182,7 @@ app.post('/enqueue', (req, res) => {
   return res
     .status(201)
     .cookie("access_token", token, {
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,//process.env.NODE_ENV === 'production',
       sameSite: 'none',
       httpOnly: false
     })
