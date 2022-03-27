@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const jwtDecode = require("jwt-decode");
 const e = require("express");
 const dotenv = require("dotenv")
+const session = require('express-session');
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
