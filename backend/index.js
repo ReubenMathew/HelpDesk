@@ -136,6 +136,7 @@ app.get('/login', async (req, res) => {
       console.log(username, "logged in", token);
       res
         .cookie("access_token", token, {
+          httpOnly: false
           // secure: process.env.NODE_ENV === 'production',
         })
         .json({
