@@ -37,7 +37,7 @@ export async function getServerSideProps({ params, req }) {
 const Post = ({ room }) => {
   const router = useRouter();
   const [cookies, setCookie] = useCookies();
-
+  
   useEffect(() => {
     router.beforePopState(({ url, as, options }) => {
       fetch(

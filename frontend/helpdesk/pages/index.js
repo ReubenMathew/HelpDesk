@@ -6,7 +6,7 @@ import { Container, Input, Row, Text, Button, Modal, Checkbox, Grid, Card, Col, 
 
 export default function Home() {
 
-  const router = useRouter();  
+  const router = useRouter();
   const [visible, setVisible] = React.useState(false);
   const handler = () => setVisible(true);
   const [username, setUsername] = useState("");
@@ -17,7 +17,7 @@ export default function Home() {
     setVisible(false);
     console.log('closed');
   };
-  
+
   var CreateChat = () => {
     var newUuid = uuid();
     fetch(
@@ -30,16 +30,28 @@ export default function Home() {
         }
       }
     )
-      .then(res => res)
+      .then(res => res.json())
       .then(res => {
+        async function setAccessCookie(token) {
+          setCookie("access_token", token, {
+            path: "/",
+            maxAge: 3600,
+            sameSite: 'none',
+            secure: process.env.NODE_ENV === 'production',
+          });
+        }
+        const cookieToken = res.token;
         fetch(
           `${process.env.BACKEND_URL}/${newUuid}`,
           {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'include'
           }
         )
-        .then(router.push(`/chat/${newUuid}`))
+          .then(() => {
+            setAccessCookie(cookieToken)
+            .then(router.push(`/chat/${newUuid}`));
+          });
       });
   }
 
@@ -48,6 +60,11 @@ export default function Home() {
       return res.json();
     }).then(res => {
       if (res.authenticated) {
+        setCookie("access_token", res.token, {
+          path: "/",
+          maxAge: 3600,
+          sameSite: true
+        });
         closeHandler();
         router.push(`/admin/${username}`)
       } else {

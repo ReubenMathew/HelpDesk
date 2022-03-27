@@ -8,6 +8,11 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const jwtDecode = require("jwt-decode");
 const e = require("express");
+const dotenv = require("dotenv");
+
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
@@ -27,20 +32,15 @@ const limiter = rateLimit({
 });
 
 // express middleware
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: true
+}));
 app.use(express.json());
 app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(limiter);
-app.use(function(req, res, next) {
-  const origin = req.headers.origin;
-  res.setHeader('Access-Control-Allow-Origin', origin);
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST", "DELETE");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
 
 let roomStore = [];
 
@@ -126,15 +126,12 @@ app.get('/login', async (req, res) => {
     if (storedPassword == password) {
       console.log(username, "logged in", token);
       res
-        .cookie("access_token", token, {
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'none'
-        })
         .json({
-          authenticated: true
+          authenticated: true,
+          token: token
         })
         .status(200);
-        return;
+      return;
     } else {
       res.json({
         authenticated: false,
@@ -143,6 +140,23 @@ app.get('/login', async (req, res) => {
       return;
     }
   });
+});
+
+app.post('/enqueue', (req, res) => {
+  const room = req.query.room;
+  const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
+  console.log("User has been queued to", room);
+  return res
+    .status(201)
+    .cookie("access_token", token, {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      httpOnly: true,
+    })
+    .json({
+      message: "Queued successfully",
+      token: token
+    });
 });
 
 // verification endpoint for JWT tokens
@@ -167,21 +181,6 @@ app.post("/verifyRoom", authorization, (req, res) => {
     });
 });
 
-app.post('/enqueue', (req, res) => {
-  const room = req.query.room;
-  const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
-  console.log("User has been queued to", room);
-  return res
-    .status(201)
-    .cookie("access_token", token, {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none'
-    })
-    .json({
-      message: "Queued successfully"
-    });
-});
-
 app.post('/:room', authorization, (req, res) => {
   console.log("Creating room", req.params.room);
   const roomToAdd = req.params.room
@@ -202,6 +201,6 @@ app.delete('/:room', authorization, (req, res) => {
 })
 
 server.listen(8080, () => {
-  console.log("Server is running...");
+  console.log("Server is running on port 8080...");
   client.connect();
 });
