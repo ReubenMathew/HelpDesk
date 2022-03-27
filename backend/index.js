@@ -26,7 +26,7 @@ client.on('error', err => {
 // express middleware
 app.use(cors({
   credentials: true,
-  origin: "https://help-desk-608pyv7nu-reubenmathew.vercel.app"
+  origin: "*.vercel.app"
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
