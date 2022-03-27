@@ -7,8 +7,7 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const jwtDecode = require("jwt-decode");
 const e = require("express");
-const dotenv = require("dotenv")
-const session = require('express-session');
+const dotenv = require("dotenv");
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -25,8 +24,7 @@ client.on('error', err => {
   console.log('Error ' + err);
 });
 
-
-const allowedOrigins = ['https://help-desk-3ajxsxm8a-reubenmathew.vercel.app', 'http://localhost:3000'];
+// const allowedOrigins = ['https://help-desk-3ajxsxm8a-reubenmathew.vercel.app'];
 const corsOptions = {
   origin: function (origin, callback) {
     callback(null, true);
@@ -40,12 +38,6 @@ const corsOptions = {
 }
 
 // express middleware
-app.use(session({
-  cookie: {
-    secure: false
-  },
-  secret: process.env.JWT_SECRET
-}));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
