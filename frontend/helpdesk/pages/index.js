@@ -53,6 +53,11 @@ export default function Home() {
       return res.json();
     }).then(res => {
       if (res.authenticated) {
+        setCookie("access_token", res.token, {
+          path: "/",
+          maxAge: 3600,
+          sameSite: true
+        });
         closeHandler();
         router.push(`/admin/${username}`)
       } else {

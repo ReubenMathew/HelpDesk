@@ -113,12 +113,9 @@ app.get('/login', async (req, res) => {
     if (storedPassword == password) {
       console.log(username, "logged in", token);
       res
-        .cookie("access_token", token, {
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'none'
-        })
         .json({
-          authenticated: true
+          authenticated: true,
+          token: token
         })
         .status(200);
       return;
