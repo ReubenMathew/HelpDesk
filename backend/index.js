@@ -140,8 +140,7 @@ app.post('/enqueue', (req, res) => {
     .status(201)
     .cookie("access_token", token, {
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      httpOnly: false
+      sameSite: 'none'
     })
     .json({
       message: "Queued successfully"
