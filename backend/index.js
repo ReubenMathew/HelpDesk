@@ -42,7 +42,8 @@ const corsOptions = {
 // express middleware
 app.use(session({
   cookie: {
-    secure: false
+    secure: false,
+    secret: process.env.JWT_SECRET
   }
 }));
 app.use(cors(corsOptions));
