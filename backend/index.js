@@ -111,6 +111,7 @@ app.get('/login', async (req, res) => {
   const password = req.query.password;
 
   const token = jwt.sign({ role: 'admin' }, JWT_SECRET);
+  //This needs fixing as per https://github.com/ReubenMathew/HelpDesk/security/code-scanning/130
   await client.get(username).then(storedPassword => {
     if (storedPassword == null) {
       res
