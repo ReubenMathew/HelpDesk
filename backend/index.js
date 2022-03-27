@@ -136,8 +136,7 @@ app.get('/login', async (req, res) => {
       console.log(username, "logged in", token);
       res
         .cookie("access_token", token, {
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'none'
+          // secure: process.env.NODE_ENV === 'production',
         })
         .json({
           authenticated: true
