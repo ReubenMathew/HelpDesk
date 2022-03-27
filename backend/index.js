@@ -29,6 +29,7 @@ const limiter = rateLimit({
 // express middleware
 app.use(cors());
 app.use(express.json());
+app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(limiter);
@@ -107,8 +108,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', async (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
+  const username = req.queryString('username');
+  const password = req.queryString('password');
 
   const token = jwt.sign({ role: 'admin' }, JWT_SECRET);
   //This needs fixing as per https://github.com/ReubenMathew/HelpDesk/security/code-scanning/130
