@@ -6,29 +6,7 @@ import { Container, Row, Text, Button, Grid, Card, Spacer } from '@nextui-org/re
 export async function getServerSideProps({ params }) {
   const adminName = params.admin;
   // Pass data to the page via props
-  const cookies = req.headers.cookie;
-  let authenticated = await fetch(`${process.env.BACKEND_URL}/verifyRoom?room=`,
-    {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        cookie: cookies
-      }
-    }
-  ).then(res => {
-    return res.json();
-  }).then((res) => {
-    if (res.authentication) {
-      return true;
-    }
-    return false;
-  }).catch(e => {
-    return false;
-  });
-  if (authenticated != true) {
-    return { props: { room }, redirect: { destination: '/chat/error' } }
-  }
-  return { props: { adminName } };
+  return { props: { adminName } }
 }
 
 export default function Home({ adminName }) {

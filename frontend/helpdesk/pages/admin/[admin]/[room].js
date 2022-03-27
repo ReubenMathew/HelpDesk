@@ -6,31 +6,8 @@ import { Container, Card, Grid, Row, Input, Button, Spacer, Text } from '@nextui
 let socket = false;
 
 export async function getServerSideProps({ params }) {
-  const cookies = req.headers.cookie;
-  const room = params.pid;
+  const room = params.room;
   const adminName = params.admin;
-  
-  let authenticated = await fetch(`${process.env.BACKEND_URL}/verifyRoom?room=${room}`,
-    {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        cookie: cookies
-      }
-    }
-  ).then(res => {
-    return res.json();
-  }).then((res) => {
-    if (res.authentication) {
-      return true;
-    }
-    return false;
-  }).catch(e => {
-    return false;
-  });
-  if (authenticated != true) {
-    return { props: { room }, redirect: { destination: '/chat/error' } }
-  }
   // Pass data to the page via props
   return { props: { room, adminName } }
 }
