@@ -138,10 +138,10 @@ app.post('/enqueue', (req, res) => {
   console.log("User has been queued to", room);
   return res
     .status(201)
-    .cookie("access_token", token, {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none'
-    })
+    // .cookie("access_token", token, {
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'none'
+    // })
     .json({
       message: "Queued successfully",
       token: token
