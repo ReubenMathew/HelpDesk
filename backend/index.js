@@ -39,11 +39,16 @@ const corsOptions = {
 }
 
 // express middleware
+app.use(session({
+  cookie: {
+    secure: false
+  }
+}));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   console.log(req.headers);
   if (req.headers.origin) {
     res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
@@ -143,7 +148,7 @@ app.get('/login', async (req, res) => {
           authenticated: true
         })
         .status(200);
-        return;
+      return;
     } else {
       res.json({
         authenticated: false,
