@@ -41,7 +41,7 @@ export default function Home() {
           `${process.env.BACKEND_URL}/${newUuid}`,
           {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'include'
           }
         )
         .then(router.push(`/chat/${newUuid}`))
