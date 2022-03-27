@@ -33,12 +33,12 @@ export default function Home() {
       .then(res => res.json())
       .then(res => {
         async function setAccessCookie() {
-          setCookie("access_token", res.token, {
-            path: "/",
-            maxAge: 3600,
-            sameSite: 'none',
-            secure: process.env.NODE_ENV === 'production'
-          });
+          // setCookie("access_token", res.token, {
+          //   path: "/",
+          //   maxAge: 3600,
+          //   sameSite: 'none',
+          //   secure: process.env.NODE_ENV === 'production',
+          // });
         }
         setAccessCookie()
           .then(() => {
