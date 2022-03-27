@@ -37,8 +37,7 @@ export async function getServerSideProps({ params, req }) {
 const Post = ({ room }) => {
   const router = useRouter();
   const [cookies, setCookie] = useCookies();
-  //TODO(Reuben): Remove in production
-  console.log("COOKIES", cookies);
+  
   useEffect(() => {
     router.beforePopState(({ url, as, options }) => {
       fetch(

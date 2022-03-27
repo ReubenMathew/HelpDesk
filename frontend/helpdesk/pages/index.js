@@ -32,24 +32,25 @@ export default function Home() {
     )
       .then(res => res.json())
       .then(res => {
-        async function setAccessCookie() {
-          // setCookie("access_token", res.token, {
-          //   path: "/",
-          //   maxAge: 3600,
-          //   sameSite: 'none',
-          //   secure: process.env.NODE_ENV === 'production',
-          // });
+        async function setAccessCookie(token) {
+          setCookie("access_token", token, {
+            path: "/",
+            maxAge: 3600,
+            sameSite: 'none',
+            secure: process.env.NODE_ENV === 'production',
+          });
         }
-        setAccessCookie()
+        const cookieToken = res.token;
+        fetch(
+          `${process.env.BACKEND_URL}/${newUuid}`,
+          {
+            method: 'POST',
+            credentials: 'include'
+          }
+        )
           .then(() => {
-            fetch(
-              `${process.env.BACKEND_URL}/${newUuid}`,
-              {
-                method: 'POST',
-                credentials: 'include'
-              }
-            )
-              .then(router.push(`/chat/${newUuid}`));
+            setAccessCookie(cookieToken)
+            .then(router.push(`/chat/${newUuid}`));
           });
       });
   }
