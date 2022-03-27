@@ -35,7 +35,8 @@ export default function Home() {
         setCookie("access_token", res.token, {
           path: "/",
           maxAge: 3600,
-          sameSite: true
+          sameSite: 'none',
+          secure: process.env.NODE_ENV === 'production'
         });
         fetch(
           `${process.env.BACKEND_URL}/${newUuid}`,
