@@ -32,6 +32,7 @@ export default function Home() {
     )
       .then(res => res)
       .then(res => {
+        //TODO(Reuben): Remove in production
         console.log("COOKIES:", cookies);
         fetch(
           `${process.env.BACKEND_URL}/${newUuid}`,
