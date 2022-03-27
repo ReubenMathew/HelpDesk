@@ -23,30 +23,12 @@ const client = redis.createClient({
 client.on('error', err => {
   console.log('Error ' + err);
 });
-
-// const allowedOrigins = ['https://help-desk-3ajxsxm8a-reubenmathew.vercel.app'];
-const corsOptions = {
-  origin: function (origin, callback) {
-    callback(null, true);
-    // if (allowedOrigins.indexOf(origin) !== -1) {
-    //   callback(null, true)
-    // } else {
-    //   callback(new Error('Not allowed by CORS'))
-    // }
-  },
-  credentials: true
-}
-
 // express middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use(function (req, res, next) {
-  console.log(req.headers);
-  if (req.headers.origin) {
-    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-  }
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST", "DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -135,8 +117,8 @@ app.get('/login', async (req, res) => {
       console.log(username, "logged in", token);
       res
         .cookie("access_token", token, {
-          httpOnly: false
-          // secure: process.env.NODE_ENV === 'production',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'none'
         })
         .json({
           authenticated: true
@@ -151,6 +133,22 @@ app.get('/login', async (req, res) => {
       return;
     }
   });
+});
+
+app.post('/enqueue', (req, res) => {
+  const room = req.query.room;
+  const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
+  console.log("User has been queued to", room);
+  return res
+    .status(201)
+    .cookie("access_token", token, {
+      secure: false,//process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      httpOnly: false
+    })
+    .json({
+      message: "Queued successfully"
+    });
 });
 
 // verification endpoint for JWT tokens
@@ -172,22 +170,6 @@ app.post("/verifyRoom", authorization, (req, res) => {
     .status(403)
     .json({
       authentication: false
-    });
-});
-
-app.post('/enqueue', (req, res) => {
-  const room = req.query.room;
-  const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
-  console.log("User has been queued to", room);
-  return res
-    .status(201)
-    .cookie("access_token", token, {
-      secure: false,//process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      httpOnly: false
-    })
-    .json({
-      message: "Queued successfully"
     });
 });
 
