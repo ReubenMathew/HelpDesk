@@ -268,7 +268,6 @@ const Post = ({ room, adminName }) => {
           }
         />
       </Row>
-
       <Modal
         blur
         closeButton
