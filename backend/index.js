@@ -181,6 +181,19 @@ app.post("/verifyRoom", authorization, (req, res) => {
     });
 });
 
+app.post('/requeue/:room', (req, res) => {
+  console.log("Requeueing room", req.params.room);
+  const roomToAdd = req.params.room
+  if (!roomStore.includes(roomToAdd)) {
+    roomStore.push(roomToAdd);
+  }
+  res
+    .status(201)
+    .json({
+      message: "Successfully requeued room"
+    });
+});
+
 app.post('/:room', (req, res) => {
   console.log("Creating room", req.params.room);
   const roomToAdd = req.params.room
