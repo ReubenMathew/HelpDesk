@@ -1,13 +1,42 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Container, Row, Text, Button, Grid, Card, Spacer } from '@nextui-org/react';
+import { Container, Row, Text, Button, Spacer, Table, styled } from '@nextui-org/react';
+
 
 export async function getServerSideProps({ params }) {
   const adminName = params.admin;
   // Pass data to the page via props
   return { props: { adminName } }
 }
+
+// From https://nextui.org/docs/components/table
+export const StyledBadge = styled('span', {
+  display: 'inline-block',
+  textTransform: 'uppercase',
+  padding: '$2 $3',
+  margin: '0 2px',
+  fontSize: '10px',
+  fontWeight: '$bold',
+  borderRadius: '14px',
+  letterSpacing: '0.6px',
+  lineHeight: 1,
+  boxShadow: '1px 2px 5px 0px rgb(0 0 0 / 5%)',
+  alignItems: 'center',
+  alignSelf: 'center',
+  color: '$white',
+  variants: {
+    type: {
+      unattended: {
+        bg: '$warningLight',
+        color: '$warning'
+      }
+    }
+  },
+  defaultVariants: {
+    type: 'active'
+  }
+});
 
 export default function Home({ adminName }) {
 
@@ -35,19 +64,7 @@ export default function Home({ adminName }) {
     );
     router.push(`${adminName}/${room}`);
   }
-
   return (
-    // <div>
-    //   <Head>
-    //     <title>ADMIN</title>
-    //   </Head>
-    //   <h1>Admin Support Queue</h1>
-    //   <div id="rooms">
-    //   <div id="messages">
-    //     {rooms.map(room => <div key={room} className="room"><button onClick={() => helpClient(room)} >User {room}</button></div>)}
-    //   </div>
-    //   </div>
-    // </div>
     <Container>
       <Row justify="center">
         <Text
@@ -60,30 +77,81 @@ export default function Home({ adminName }) {
           Admin Support Queue
         </Text>
       </Row>
-      <Spacer y={5} />
-      <Grid.Container gap={5}>
-        {rooms.map(
-          room =>
-            <Row key={room} justify="center">
-              <Card
-                color="primary"
-                css={{ width: "max-content", margin: "0.25rem 0 0" }}
-                key={room}
-              >
-                {/* <button onClick={() => helpClient(room)} >User {room}</button> */}
-
-                <Button
-                  size="lg"
-                  onClick={() => helpClient(room)}
-                >
-                  User {room}
-                </Button>
-              </Card>
-              <Spacer y={5} />
-            </Row>
-        )
-        }
-      </Grid.Container>
+      <Spacer y={1} />
+      <Row justify="center">
+        <Text
+          h1
+          size={30}
+          weight="bold"
+          color="black"
+          justify="center"
+        >
+          Unattended cases: {rooms.length}
+        </Text>
+      </Row>
+      <Spacer y={2} />
+      <Row Width="90vw" justify='center'>
+        <Table
+          bordered
+          shadow={true}
+          color="secondary"
+          aria-label="Example pagination  table"
+          css={{ minWidth: "90vw" }}
+        >
+          <Table.Header>
+            <Table.Column
+              align="center"
+            >Anonymous User</Table.Column>
+            <Table.Column
+              align="center"
+            >Status</Table.Column>
+            <Table.Column
+              align="center"
+            >Action</Table.Column>
+          </Table.Header>
+          <Table.Body>
+            {rooms.map(
+              room =>
+                <Table.Row key={room}>
+                  <Table.Cell>
+                    <Text
+                      h1
+                      size={20}
+                      weight="bold"
+                      color="black"
+                      justify="center"
+                    >
+                      {room}
+                    </Text>
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Row justify="center">
+                      <StyledBadge type="unattended">Unattended</StyledBadge>
+                    </Row>
+                  </Table.Cell>
+                  <Table.Cell
+                  >
+                    <Row justify="center">
+                      <Button
+                        size="xs"
+                        onClick={() => helpClient(room)}
+                      >
+                        Join Chat
+                      </Button>
+                    </Row>
+                  </Table.Cell>
+                </Table.Row>
+            )
+            }
+          </Table.Body>
+          <Table.Pagination
+            shadow
+            noMargin
+            align="center"
+            rowsPerPage={15}
+          />
+        </Table>
+      </Row>
     </Container>
   )
 }
