@@ -108,8 +108,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const username = req.body.queryString('username');
-  const password = req.body.queryString('password');
+  const username = req.body.username;
+  const password = req.body.password;
 
   const token = jwt.sign({ role: 'admin' }, JWT_SECRET);
   //This needs fixing as per https://github.com/ReubenMathew/HelpDesk/security/code-scanning/130
