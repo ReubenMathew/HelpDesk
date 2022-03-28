@@ -124,7 +124,7 @@ app.post('/login', async (req, res) => {
       return;
     }
     if (storedPassword == password) {
-      console.log(username, "logged in", token);
+      console.log("%s logged in %s", username, token);
       res
         .json({
           authenticated: true,
