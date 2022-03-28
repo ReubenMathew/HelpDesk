@@ -19,6 +19,7 @@
     "nodemon": "^2.0.15",
     "redis": "^4.0.4",
     "sanitize": "^2.1.0",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.4.1",
+    "csurf": "^1.11.0"
   }
 }

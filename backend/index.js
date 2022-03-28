@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const jwtDecode = require("jwt-decode");
 const e = require("express");
 const dotenv = require("dotenv");
-
+const csrf = require("csurf");
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
@@ -41,6 +41,7 @@ app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(limiter);
+app.use(csrf({cookie: true}));
 
 let roomStore = [];
 
