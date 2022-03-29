@@ -16,6 +16,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
+var csrfProtection = csrf({ cookie: true })
+
+
 const app = express();
 const client = redis.createClient({
   url: process.env.REDIS_URL || ''
@@ -41,7 +44,6 @@ app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(limiter);
-app.use(csrf({cookie: true}));
 
 let roomStore = [];
 
@@ -100,15 +102,16 @@ const authorization = (req, res, next) => {
 
 
 // REST Endpoints
-app.get('/', (req, res) => {
+app.get('/', csrfProtection, (req, res) => {
   return res
+    .render('send', { csrfToken: req.csrfToken() })
     .status(200)
     .json({
       rooms: roomStore
     });
 });
 
-app.get('/login', async (req, res) => {
+app.get('/login', csrfProtection, async (req, res) => {
   const username = req.queryString('username');
   const password = req.queryString('password');
 
@@ -143,7 +146,7 @@ app.get('/login', async (req, res) => {
   });
 });
 
-app.post('/enqueue', (req, res) => {
+app.post('/enqueue', csrfProtection, (req, res) => {
   const room = req.query.room;
   const token = jwt.sign({ room: room, role: "user" }, JWT_SECRET);
   console.log("User has been queued to", room);
@@ -161,7 +164,7 @@ app.post('/enqueue', (req, res) => {
 });
 
 // verification endpoint for JWT tokens
-app.post("/verifyRoom", authorization, (req, res) => {
+app.post("/verifyRoom", authorization, csrfProtection, (req, res) => {
   const token = req.cookies.access_token;
   const room = req.query.room;
   const data = jwt.verify(token, JWT_SECRET);
@@ -182,7 +185,7 @@ app.post("/verifyRoom", authorization, (req, res) => {
     });
 });
 
-app.post('/requeue/:room', (req, res) => {
+app.post('/requeue/:room', csrfProtection, (req, res) => {
   console.log("Requeueing room", req.params.room);
   const roomToAdd = req.params.room
   if (!roomStore.includes(roomToAdd)) {
@@ -195,7 +198,7 @@ app.post('/requeue/:room', (req, res) => {
     });
 });
 
-app.post('/:room', (req, res) => {
+app.post('/:room', csrfProtection, (req, res) => {
   console.log("Creating room", req.params.room);
   const roomToAdd = req.params.room
   if (!roomStore.includes(roomToAdd)) {
@@ -208,7 +211,7 @@ app.post('/:room', (req, res) => {
     });
 });
 
-app.delete('/:room', (req, res) => {
+app.delete('/:room', csrfProtection, (req, res) => {
   console.log("Deleting room", req.params.room);
   roomStore = roomStore.filter(room => room != req.params.room);
   res.sendStatus(202);
