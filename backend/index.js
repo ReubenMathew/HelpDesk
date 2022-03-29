@@ -38,7 +38,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(require('sanitize').middleware);  //for sanitizing inputs
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(limiter);
 app.use(csrf({cookie: true}));
