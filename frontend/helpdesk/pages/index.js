@@ -50,13 +50,39 @@ export default function Home() {
         )
           .then(() => {
             setAccessCookie(cookieToken)
-            .then(router.push(`/chat/${newUuid}`));
+              .then(router.push(`/chat/${newUuid}`));
           });
       });
   }
 
+  // async function signInHandler() {
+  //   await fetch(`${process.env.BACKEND_URL}/login?username=${username}&password=${password}`).then((res) => {
+  //     return res.json();
+  //   }).then(res => {
+  //     if (res.authenticated) {
+  //       setCookie("access_token", res.token, {
+  //         path: "/",
+  //         maxAge: 3600,
+  //         sameSite: true
+  //       });
+  //       closeHandler();
+  //       router.push(`/admin/${username}`)
+  //     } else {
+  //       console.log("User not found or wrong password");
+  //     }
+  //   });
+  // };
+
   async function signInHandler() {
-    await fetch(`${process.env.BACKEND_URL}/login?username=${username}&password=${password}`).then((res) => {
+    await fetch(`${process.env.BACKEND_URL}/login`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        username: {username},
+        password: {password}
+     }),
+    }
+    ).then((res) => {
       return res.json();
     }).then(res => {
       if (res.authenticated) {
