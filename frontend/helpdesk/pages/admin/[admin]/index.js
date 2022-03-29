@@ -94,7 +94,7 @@ export default function Home({ adminName }) {
         <Table
           bordered
           shadow={true}
-          color="secondary"
+          color="primary"
           aria-label="Example pagination  table"
           css={{ minWidth: "90vw" }}
         >
