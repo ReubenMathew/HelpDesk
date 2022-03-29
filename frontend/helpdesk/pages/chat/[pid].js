@@ -213,7 +213,7 @@ const Post = ({ room }) => {
   
                         {msg.isImage ?
                           <Col>
-                            <Row justify={msg.author === `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+                            <Row justify="flex-end">
                               <Button
                                 auto
                                 rounded
