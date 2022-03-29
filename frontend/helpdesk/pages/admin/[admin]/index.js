@@ -86,7 +86,7 @@ export default function Home({ adminName }) {
           color="black"
           justify="center"
         >
-          Unattended cases: {rooms.length}
+          Unattended Cases: {rooms.length}
         </Text>
       </Row>
       <Spacer y={2} />
