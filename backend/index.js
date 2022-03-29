@@ -31,6 +31,12 @@ const limiter = rateLimit({
   max: 5              //> of which we can only make 5 requests in that 1 minute
 });
 
+//create express session for solution 2 to CSRF  https://stackoverflow.com/a/65881552/11925334
+const session= require('express-session')
+const csrfProtection =  csrf({
+cookie: false,
+});
+
 // express middleware
 app.use(cors({
   credentials: true,
@@ -40,8 +46,19 @@ app.use(express.json());
 app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(limiter);
-app.use(csrf({cookie: true}));
+app.use(limiter); // limiter refers to rateLimit  
+
+
+app.use(session({
+    name: "client",
+    secret: process.env.JWT_SECRET,
+    cookie: { maxAge: 3 * 60 * 60 * 1000 },
+    resave: false,
+    saveUninitialized: false
+}))
+
+app.use(csrfProtection);
+
 
 let roomStore = [];
 
