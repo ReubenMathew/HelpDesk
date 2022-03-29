@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import io from 'socket.io-client';
 import jwt from 'jwt-decode';
-import { Container, Card, Grid, Row, Input, Button, Spacer, Text } from '@nextui-org/react';
+import { Container, Card, Grid, Row, Input, Button, Spacer, Text, Loading, Modal, Col } from '@nextui-org/react';
 
 let socket = false;
 
@@ -37,22 +37,18 @@ export async function getServerSideProps({ params, req }) {
 const Post = ({ room }) => {
   const router = useRouter();
   const [cookies, setCookie] = useCookies();
-  
-  useEffect(() => {
-    router.beforePopState(({ url, as, options }) => {
-      fetch(
-        `${process.env.BACKEND_URL}/${room}`,
-        {
-          method: 'DELETE'
-        }
-      );
-      return true
-    })
-  }, [])
-
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [roomName, setRoomName] = useState(room);
+  const [fileToUpload, setFileToUpload] = useState([]);
+
+  const [visible, setVisible] = React.useState(false);
+  const handler = () => setVisible(true);
+  const closeHandler = () => {
+    setVisible(false);
+  };
+
+  const [isWaiting, setIsWaiting] = React.useState(true);
 
   useEffect(() => {
     if (!socket) {
@@ -64,6 +60,9 @@ const Post = ({ room }) => {
   useEffect(() => {
     socket.on("receive_message", (msg) => {
       console.log(msg);
+      if (msg.message.includes("has joined the session.")) {
+        setIsWaiting(false)
+      }
       setMessages([...messages, msg]);
     });
   }, [messages]);
@@ -74,6 +73,7 @@ const Post = ({ room }) => {
       setMessages([...messages, img]);
     });
   }, [messages]);
+
 
   const sendMessage = () => {
     if (input == "") {
@@ -90,8 +90,11 @@ const Post = ({ room }) => {
     setInput("");
   }
 
-  const sendImage = async (e) => {
-    const file = e.target.files[0];
+  const sendImage = async () => {
+    if (fileToUpload == "") {
+      return;
+    }
+    const file = fileToUpload;
     const base64 = await convertToBase64(file);
     const Image = {
       room: roomName,
@@ -101,8 +104,9 @@ const Post = ({ room }) => {
     }
     console.log(Image);
     socket.emit("send_image", Image);
+    setMessages([...messages, Image]);
+    closeHandler()
   }
-
 
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -117,63 +121,229 @@ const Post = ({ room }) => {
     });
   };
 
+  const endChat = () => {
+    fetch(
+      `${process.env.BACKEND_URL}/${room}`,
+      {
+        method: 'DELETE'
+      }
+    )
+    router.push("/")
+    return true
+  }
+
+
   return (
     <Container>
-      <Text
-        h1
-        size={30}
-        weight="bold"
+      <Modal
+        preventClose
+        blur
+        aria-labelledby="modal-title"
+        open={isWaiting}
+        css={{ height: "35vh", width: "50vw" }}
       >
-        Hello, Anonymous User!
-      </Text>
-      <Row
-        css={{ height: "85vh", overflow: "clip auto" }}
-      >
-        <Grid.Container gap={5}>
-          {messages.map(
-            msg =>
-              <Row key={msg.message} justify={msg.author === `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
-                {
-                  console.log(msg.author)
-                }
-                <Card
-                  color={msg.author === `AnonymousUser ${roomName}` ? "success" : "primary"}
-                  css={{ width: "max-content", margin: "0.25rem 0 0" }}
-                  key={msg.message}
+        <Modal.Body>
+          <Row justify="center">
+            <h3>
+              Waiting for an agent...
+            </h3>
+          </Row>
+          <Spacer y={2.5} />
+          <Row justify="center">
+            <Loading
+              type="points"
+              loadingCss={{ $$loadingSize: "30px", $$loadingBorder: "10px" }}
+            />
+          </Row>
+          <Spacer y={2} />
+          <Row justify='center'>
+            <Button
+              color="error"
+              auto
+              onClick={endChat}
+            >
+              <Text css={{ color: 'inherit' }} size={12} weight="bold">
+                Leave Queue
+              </Text>
+            </Button>
+          </Row>
+        </Modal.Body>
+      </Modal>
+      {
+        !isWaiting ?       <Container>
+        <Text
+          h1
+          size={30}
+          weight="bold"
+        >
+          Hello, Anonymous User!
+        </Text>
+        <Text
+          h2
+          size={25}
+          weight="bold"
+        >
+          You are now chatting with a help agent.
+        </Text>
+        <Row
+          css={{ height: "80vh", overflow: "clip auto" }}
+        >
+          <Grid.Container gap={5}>
+            {messages.map(
+              msg =>
+                <Row key={msg.message} justify={msg.author === `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+                  {
+                    console.log("5ara", msg.author)
+                  }
+                  <Card
+                    color={msg.author === `AnonymousUser ${roomName}` ? "success" : "primary"}
+                    css={{ width: "max-content", maxWidth: "45vw", margin: "0.25rem 0 0", height: "max-content", maxHeight: "45vw" }}
+                    key={msg.message}
+                  >
+                    {msg.isImage ?
+                      <img src={msg.message} />
+                      : msg.message}
+                    <Card.Footer>
+                      <Row>
+                        <Col>
+                          <Row>
+                            {msg.author === `AnonymousUser ${roomName}` ? "You" : "Help Agent"}
+                          </Row>
+                        </Col>
+  
+                        {msg.isImage ?
+                          <Col>
+                            <Row justify={msg.author === `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
+                              <Button
+                                auto
+                                rounded
+                                css={{ color: "white", bg: "black" }}
+                              >
+                                <a
+                                  download={`DownloadedFile.${msg.message.substring("data:image/".length, msg.message.indexOf(";base64"))}`}
+                                  css={{ color: "inherit" }}
+                                  size={12}
+                                  weight="bold"
+                                  transform="uppercase"
+                                  href={msg.message}
+                                >
+                                  Download File
+                                </a>
+                              </Button>
+                            </Row>
+                          </Col>
+                          : null
+                        }
+                      </Row>
+                    </Card.Footer>
+                  </Card>
+                </Row>
+            )
+            }
+          </Grid.Container>
+        </Row>
+        <Spacer />
+        <Row justify="center">
+          <Button
+            color="primary"
+            css={{
+              borderTopRightRadius: "0px",
+              borderBottomRightRadius: "0px"
+            }}
+            auto
+            onClick={handler}
+          >
+            <Text css={{ color: 'inherit' }} size={12} weight="bold">
+              Send File
+            </Text>
+          </Button>
+          <Spacer x={0.2} />
+          <Button
+            color="error"
+            css={{
+              borderTopLeftRadius: "0px",
+              borderBottomLeftRadius: "0px"
+            }}
+            auto
+            onClick={endChat}
+          >
+            <Text css={{ color: 'inherit' }} size={12} weight="bold">
+              End Chat
+            </Text>
+          </Button>
+        </Row>
+        <Spacer />
+        <Row>
+          <Input
+            css={{
+              width: "100%",
+            }}
+            onChange={e => setInput(e.target.value)} value={input}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                { sendMessage() }
+              }
+            }}
+            clearable
+            contentRightStyling={false}
+            placeholder="Type your message..."
+            contentRight={
+              <Row>
+                <Spacer x={0.5} />
+                <Button
+                  color="primary"
+                  css={{
+                    borderTopLeftRadius: "0px",
+                    borderBottomLeftRadius: "0px"
+                  }}
+                  auto
+                  onClick={sendMessage}
                 >
-                  {msg.message}
-                  <Card.Footer>
-                    {msg.author === `AnonymousUser ${roomName}` ? "You" : "Help Agent"}
-                  </Card.Footer>
-                </Card>
+                  Send
+                </Button>
               </Row>
-          )
-          }
-        </Grid.Container>
-      </Row>
-      <Spacer />
-      <Row>
-        <Input
-          css={{ width: "100%" }}
-          onChange={e => setInput(e.target.value)} value={input}
-          clearable
-          contentRightStyling={false}
-          placeholder="Type your message..."
-          contentRight={
+            }
+          />
+        </Row>
+        <Modal
+          blur
+          closeButton
+          aria-labelledby="modal-title"
+          open={visible}
+          onClose={closeHandler}
+        >
+          <Modal.Header>
+            <Text b size={18}>
+              File Upload
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <Text>
+              Click browse to select files to upload. Accepted file types are *.jpg, *.jpeg, *.png
+            </Text>
+            <Spacer />
+            <input
+              type="file"
+              name="fileUpload"
+              accept=".jpeg, .png, .jpg"
+              onChange={(e) => setFileToUpload(e.target.files[0])}
+            >
+            </input>
+          </Modal.Body>
+          <Modal.Footer justify='center'>
+            <Spacer y={3} />
             <Button
               auto
-              onClick={sendMessage}>
-              Send
-            </Button>}
-        />
-      </Row>
-      <input
-        type="file"
-        label="Image"
-        name="fileUpload"
-        accept=".jpeg, .png, .jpg"
-        onChange={(e) => sendImage(e)}
-      />
+              justify="center"
+              css={{ width: "50%", justify: "center" }}
+              onClick={() => sendImage()}
+            >
+              Upload
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        </Container> : null
+      }
     </Container>
   )
 }
