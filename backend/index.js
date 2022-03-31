@@ -40,7 +40,7 @@ app.use(express.json());
 app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(limiter);
+// app.use(limiter);
 
 let roomStore = [];
 
