@@ -1,7 +1,7 @@
 import os
 import time
 import re
-urls = ["https://rosy-meal-production.up.railway.app/", "https://helpdesk-backend.fly.dev/"]
+urls = ["https://rosy-meal-production.up.railway.app", "https://helpdesk-backend.fly.dev"]
 routes = ["/enqueue","/login?username=admin1&password=password","/"] # First  Item
 
 script_base ="""import http from 'k6/http';
