@@ -74,14 +74,19 @@ export default function Home() {
   // };
 
   async function signInHandler() {
+    //console.log(username + " " + password)
     await fetch(`${process.env.BACKEND_URL}/login`,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        username: {username},
-        password: {password}
-     }),
-    }
+      {
+        
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "username": username,
+          "password": password,
+        })
+      }
     ).then((res) => {
       return res.json();
     }).then(res => {

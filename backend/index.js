@@ -17,6 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 const JWT_SECRET = process.env.JWT_SECRET || '';
 
 const app = express();
+
 const client = redis.createClient({
   url: process.env.REDIS_URL || ''
 });
@@ -41,6 +42,9 @@ app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // app.use(limiter);
+
+app.use(express.json());
+app.use(express.urlencoded());
 
 let roomStore = [];
 
