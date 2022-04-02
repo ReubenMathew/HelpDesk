@@ -172,7 +172,8 @@ export default function Home() {
                       </Text>
                     </Button>
                     <Modal
-                      blur
+                      //blur
+                      animated={false}
                       closeButton
                       aria-labelledby="modal-title"
                       open={visible}
