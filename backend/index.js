@@ -43,9 +43,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // app.use(limiter);
 
-app.use(express.json());
-app.use(express.urlencoded());
-
 let roomStore = [];
 
 const server = http.createServer(app);
@@ -99,8 +96,6 @@ const authorization = (req, res, next) => {
     return res.status(403);
   }
 }
-
-
 
 // REST Endpoints
 app.get('/', (req, res) => {

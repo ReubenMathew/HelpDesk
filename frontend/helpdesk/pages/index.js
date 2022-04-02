@@ -55,29 +55,9 @@ export default function Home() {
       });
   }
 
-  // async function signInHandler() {
-  //   await fetch(`${process.env.BACKEND_URL}/login?username=${username}&password=${password}`).then((res) => {
-  //     return res.json();
-  //   }).then(res => {
-  //     if (res.authenticated) {
-  //       setCookie("access_token", res.token, {
-  //         path: "/",
-  //         maxAge: 3600,
-  //         sameSite: true
-  //       });
-  //       closeHandler();
-  //       router.push(`/admin/${username}`)
-  //     } else {
-  //       console.log("User not found or wrong password");
-  //     }
-  //   });
-  // };
-
   async function signInHandler() {
-    //console.log(username + " " + password)
     await fetch(`${process.env.BACKEND_URL}/login`,
       {
-        
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
