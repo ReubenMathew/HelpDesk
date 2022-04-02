@@ -129,6 +129,11 @@ app.post('/login', async (req, res) => {
           authenticated: true,
           token: token
         })
+        .cookie("access_token", {
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'none',
+          httpOnly: false
+        })
         .status(200);
       return;
     } else {
