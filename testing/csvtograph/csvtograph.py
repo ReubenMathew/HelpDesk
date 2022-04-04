@@ -68,8 +68,8 @@ for item in csvs:
 
    try:
       df = pd.DataFrame(data, columns=rw, index=column_names)
+      df.to_csv((str(item.split('.')[0])+"good"+'.csv'), encoding='utf-8')
    except:
       pass
-   df.to_csv((str(item.split('.')[0])+"good"+'.csv'), encoding='utf-8')
        
        
