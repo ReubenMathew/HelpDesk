@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import io from 'socket.io-client';
-import jwt from 'jwt-decode';
 import { Container, Card, Grid, Row, Input, Button, Spacer, Text, Loading, Modal, Col } from '@nextui-org/react';
 
 let socket = false;

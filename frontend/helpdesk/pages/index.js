@@ -15,7 +15,6 @@ export default function Home() {
 
   const closeHandler = () => {
     setVisible(false);
-    console.log('closed');
   };
 
   var CreateChat = () => {
@@ -36,7 +35,7 @@ export default function Home() {
           setCookie("access_token", token, {
             path: "/",
             maxAge: 3600,
-            sameSite: 'none',
+            sameSite: 'lax',
             secure: process.env.NODE_ENV === 'production',
           });
         }
@@ -71,13 +70,19 @@ export default function Home() {
       return res.json();
     }).then(res => {
       if (res.authenticated) {
-        setCookie("access_token", res.token, {
-          path: "/",
-          maxAge: 3600,
-          sameSite: true
+        async function setAccessCookie(token) {
+          setCookie("access_token", token, {
+            path: "/",
+            maxAge: 3600,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+          });
+        }
+        setAccessCookie(res.token).then(() => {
+          console.log("COOKIE HAS BEEN SET", cookies);
+          closeHandler();
+          router.push(`/admin/${username}`);
         });
-        closeHandler();
-        router.push(`/admin/${username}`)
       } else {
         console.log("User not found or wrong password");
       }

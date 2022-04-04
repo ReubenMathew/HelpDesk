@@ -1,12 +1,33 @@
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Row, Text, Button, Spacer, Table, styled } from '@nextui-org/react';
 
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
   const adminName = params.admin;
-  // Pass data to the page via props
+  const cookies = req.headers.cookie;
+  let authenticated;
+  authenticated = await fetch(`${process.env.BACKEND_URL}/verifyAdmin`,
+    {
+      method: 'POST',
+      headers: {
+        cookie: cookies
+      },
+      body: {
+        token: cookies.access_token
+      }
+    }
+  ).then((res) => {
+    return res.json();
+  }).then((res) => {
+    return res.authentication;
+  }).catch(e => {
+    return false;
+  });
+  if (!authenticated) {
+    return { props: { adminName }, redirect: { destination: '/admin/error' } }
+  }
+  // Pass data to the page via props if authenticated
   return { props: { adminName } }
 }
 
