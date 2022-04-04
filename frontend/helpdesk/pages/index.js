@@ -35,7 +35,7 @@ export default function Home() {
           setCookie("access_token", token, {
             path: "/",
             maxAge: 3600,
-            sameSite: 'lax',
+            sameSite: 'none',
             secure: process.env.NODE_ENV === 'production',
           });
         }
@@ -74,8 +74,8 @@ export default function Home() {
           setCookie("access_token", token, {
             path: "/",
             maxAge: 3600,
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none',
+            secure: process.env.NODE_ENV === 'production'
           });
         }
         setAccessCookie(res.token).then(() => {
