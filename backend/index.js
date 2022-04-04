@@ -180,7 +180,7 @@ app.post("/verifyRoom", authorization, (req, res) => {
 
 // verification endpoint for JWT tokens
 app.post("/verifyAdmin", (req, res) => {
-  const token = req.cookies.access_token;
+  const token = req.cookies.access_token || req.body.token;
   console.log("Attempting admin verification with", token);
   try {
     const data = jwt.verify(token, JWT_SECRET);
