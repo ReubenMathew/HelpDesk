@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Row, Text, Button, Spacer, Table, styled } from '@nextui-org/react';
@@ -38,10 +37,10 @@ export const StyledBadge = styled('span', {
   }
 });
 
+
 export default function Home({ adminName }) {
 
   const router = useRouter();
-
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
@@ -64,6 +63,7 @@ export default function Home({ adminName }) {
     );
     router.push(`${adminName}/${room}`);
   }
+
   return (
     <Container>
       <Row justify="center">
@@ -90,22 +90,26 @@ export default function Home({ adminName }) {
         </Text>
       </Row>
       <Spacer y={2} />
-      <Row Width="90vw" justify='center'>
+      <Row width="90vw" justify='center'>
         <Table
           bordered
           shadow={true}
           color="primary"
           aria-label="Example pagination  table"
-          css={{ minWidth: "90vw" }}
+          //css={{ width: "90vw" }}
+          css={{ width: "calc($space$20 * 10)", minWidth: "200px" }}
         >
           <Table.Header>
             <Table.Column
+              css={{ width: "60%" }}
               align="center"
             >Anonymous User</Table.Column>
             <Table.Column
+              css={{ width: "auto" }}
               align="center"
             >Status</Table.Column>
             <Table.Column
+              css={{ width: "auto" }}
               align="center"
             >Action</Table.Column>
           </Table.Header>
