@@ -2,11 +2,30 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Row, Text, Button, Spacer, Table, styled } from '@nextui-org/react';
 
-
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
   const adminName = params.admin;
-  // Pass data to the page via props
-  return { props: { adminName } }
+  const cookies = req.headers.cookie;
+  let authenticated = true;
+  // let authenticated = await fetch(`${process.env.BACKEND_URL}/verifyAdmin`,
+  //   {
+  //     method: 'POST',
+  //     headers: {
+  //       cookie: cookies
+  //     },
+  //     body: {
+  //       token: cookies.access_token
+  //     }
+  //   }
+  // ).then((res) => {
+  //   return res.json();
+  // }).then((res) => {
+  //   console.log(cookies, res);
+  //   return res.authentication;
+  // }).catch(e => {
+  //   return false;
+  // });
+  // Pass data to the page via props if authenticated
+  return { props: { adminName, authenticated } }
 }
 
 // From https://nextui.org/docs/components/table
@@ -37,7 +56,6 @@ export const StyledBadge = styled('span', {
   }
 });
 
-
 export default function Home({ adminName, authenticated }) {
 
   const router = useRouter();
@@ -49,7 +67,6 @@ export default function Home({ adminName, authenticated }) {
         return response.json();
       })
       .then((response) => {
-        console.log(response.rooms);
         setRooms(response.rooms);
       })
   }, [])

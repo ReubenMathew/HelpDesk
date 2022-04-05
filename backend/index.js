@@ -6,8 +6,6 @@ const { Server } = require("socket.io");
 const redis = require("redis");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const jwtDecode = require("jwt-decode");
-const e = require("express");
 const dotenv = require("dotenv");
 
 if (process.env.NODE_ENV !== 'production') {
@@ -29,7 +27,7 @@ client.on('error', err => {
 //rate limiter being configured here
 const limiter = rateLimit({
   windowMS: 60 * 100, //this enforces a 1-minute window for our rate limiter
-  max: 5              //> of which we can only make 5 requests in that 1 minute
+  max: 120              //> of which we can only make 15 requests in that 1 minute
 });
 
 // express middleware
@@ -90,7 +88,7 @@ const authorization = (req, res, next) => {
   try {
     const data = jwt.verify(token, JWT_SECRET);
     req.room = data.room;
-    req.room = data.role;
+    req.role = data.role;
     return next();
   } catch {
     return res.status(403);
@@ -110,8 +108,7 @@ app.post('/login', async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  const token = jwt.sign({ role: 'admin' }, JWT_SECRET);
-  //This needs fixing as per https://github.com/ReubenMathew/HelpDesk/security/code-scanning/130
+  const token = jwt.sign({ role: 'admin', username: username }, JWT_SECRET);
   await client.get(username).then(storedPassword => {
     if (storedPassword == null) {
       res
@@ -120,23 +117,24 @@ app.post('/login', async (req, res) => {
           authenticated: false,
           reason: "No user found"
         });
-      return;
-    }
-    if (storedPassword == password) {
-      console.log(username, "logged in", token);
+    } else if (storedPassword == password) {
+      console.log("%s logged in %s", username, token);
       res
+        .cookie("access_token", token, {
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'none',
+          httpOnly: false
+        })
+        .status(200)
         .json({
           authenticated: true,
           token: token
-        })
-        .status(200);
-      return;
+        });
     } else {
       res.json({
         authenticated: false,
         reason: "Incorrect password"
       }).status(403);
-      return;
     }
   });
 });
@@ -178,6 +176,30 @@ app.post("/verifyRoom", authorization, (req, res) => {
     .json({
       authentication: false
     });
+});
+
+// verification endpoint for JWT tokens
+app.post("/verifyAdmin", (req, res) => {
+  const token = req.cookies.access_token || req.body.token;
+  console.log("Attempting admin verification with", token);
+  try {
+    const data = jwt.verify(token, JWT_SECRET);
+    const token_role = data.role;
+    if (token_role === 'admin') {
+      console.log()
+      return res
+        .status(200)
+        .json({
+          authentication: true
+        });
+    }
+  } catch {
+    return res
+      .status(403)
+      .json({
+        authentication: false
+      });
+  }
 });
 
 app.post('/requeue/:room', (req, res) => {
