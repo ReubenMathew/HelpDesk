@@ -1,9 +1,9 @@
 const ContentSecurityPolicy = `
-  default-src 'self';
-  script-src 'self';
-  child-src *.vercel.app;
-  style-src 'self' *.vercel.app;
-  font-src 'self';
+  // default-src 'self';
+  // script-src 'self';
+  // child-src 'self' '*.vercel.app';
+  // style-src 'self' '*.vercel.app';
+  // font-src 'self';
 `
 
 const securityHeaders = [
