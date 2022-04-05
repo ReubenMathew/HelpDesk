@@ -59,7 +59,6 @@ export const StyledBadge = styled('span', {
 export default function Home({ adminName, authenticated }) {
 
   const router = useRouter();
-
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
@@ -81,12 +80,24 @@ export default function Home({ adminName, authenticated }) {
     );
     router.push(`${adminName}/${room}`);
   }
+
+  const updateQueue = () => {
+    fetch(process.env.BACKEND_URL)
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        setRooms(response.rooms);
+      })
+  }
+
   return (
     <Container>
       <Row justify="center">
         <Text
           h1
-          size={60}
+          //auto
+          size={"4vw"}
           weight="bold"
           color="black"
           justify="center"
@@ -94,11 +105,12 @@ export default function Home({ adminName, authenticated }) {
           Admin Support Queue
         </Text>
       </Row>
-      <Spacer y={1} />
+      <Spacer y={0.5} />
       <Row justify="center">
         <Text
           h1
-          size={30}
+          //size={30}
+          size={"2vw"}
           weight="bold"
           color="black"
           justify="center"
@@ -106,23 +118,38 @@ export default function Home({ adminName, authenticated }) {
           Unattended Cases: {rooms.length}
         </Text>
       </Row>
-      <Spacer y={2} />
-      <Row Width="90vw" justify='center'>
+      <Spacer y={1} />
+      <Row justify="center">
+        <Button
+          auto
+          color="success"
+          onClick={() => updateQueue()
+          }
+        >
+          Update Queue
+        </Button>
+      </Row>
+      <Spacer y={1} />
+      <Row auto justify='center'>
         <Table
           bordered
           shadow={true}
           color="primary"
           aria-label="Example pagination  table"
-          css={{ minWidth: "90vw" }}
+          //css={{ width: "90vw" }}
+          css={{width: "90vw", minWidth: "200px", maxWidth: "600px" }}
         >
           <Table.Header>
             <Table.Column
+              css={{ width: "auto" }}
               align="center"
             >Anonymous User</Table.Column>
             <Table.Column
+              css={{ width: "auto" }}
               align="center"
             >Status</Table.Column>
             <Table.Column
+              css={{ width: "auto" }}
               align="center"
             >Action</Table.Column>
           </Table.Header>
@@ -133,7 +160,7 @@ export default function Home({ adminName, authenticated }) {
                   <Table.Cell>
                     <Text
                       h1
-                      size={20}
+                      size={"80%"}
                       weight="bold"
                       color="black"
                       justify="center"
@@ -150,11 +177,32 @@ export default function Home({ adminName, authenticated }) {
                   >
                     <Row justify="center">
                       <Button
+                      auto
                         size="xs"
                         onClick={() => helpClient(room)}
                       >
                         Join Chat
                       </Button>
+                      <Spacer x={0.5} />
+                      <Button
+                        auto
+                        color="error"
+                        size="xs"
+                        onClick={() =>
+                          fetch(
+                            `${process.env.BACKEND_URL}/${room}`,
+                            {
+                              method: 'DELETE'
+                            }
+                          )
+                            .then(() => {
+                              updateQueue();
+                            })
+                        }
+                      >
+                        Delete
+                      </Button>
+
                     </Row>
                   </Table.Cell>
                 </Table.Row>
