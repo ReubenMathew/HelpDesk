@@ -70,7 +70,7 @@ const Post = ({ room, adminName }) => {
     const Image = {
       room: roomName,
       message: base64,
-      author:adminName,
+      author: adminName,
       isImage: true
     }
     console.log(Image);
@@ -104,6 +104,13 @@ const Post = ({ room, adminName }) => {
   }
 
   const reEnqueue = () => {
+    const Message = {
+      room: roomName,
+      message: `${adminName} has left the session.`,
+      author: "System"
+    }
+    socket.emit("send_message", Message);
+
     fetch(
       `${process.env.BACKEND_URL}/requeue/${room}`,
       {
@@ -282,7 +289,7 @@ const Post = ({ room, adminName }) => {
         </Modal.Header>
         <Modal.Body>
           <Text>
-          Click browse to select files to upload. Accepted file types are *.jpg, *.jpeg, *.png          </Text>
+            Click browse to select files to upload. Accepted file types are *.jpg, *.jpeg, *.png          </Text>
           <Spacer />
           <input
             type="file"
