@@ -38,7 +38,7 @@ export const StyledBadge = styled('span', {
 });
 
 
-export default function Home({ adminName }) {
+export default function Home({ adminName, authenticated }) {
 
   const router = useRouter();
   const [rooms, setRooms] = useState([]);
