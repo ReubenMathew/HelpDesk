@@ -27,7 +27,7 @@ client.on('error', err => {
 //rate limiter being configured here
 const limiter = rateLimit({
   windowMS: 60 * 100, //this enforces a 1-minute window for our rate limiter
-  max: 5              //> of which we can only make 5 requests in that 1 minute
+  max: 15              //> of which we can only make 15 requests in that 1 minute
 });
 
 // express middleware
@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(require('sanitize').middleware);  //for sanitizing inputs
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(limiter);
+app.use(limiter);
 
 let roomStore = [];
 
