@@ -44,14 +44,15 @@ export default function Home({ adminName }) {
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
-    fetch(process.env.BACKEND_URL)
-      .then((response) => {
-        return response.json();
-      })
-      .then((response) => {
-        console.log(response.rooms);
-        setRooms(response.rooms);
-      })
+    // fetch(process.env.BACKEND_URL)
+    //   .then((response) => {
+    //     return response.json();
+    //   })
+    //   .then((response) => {
+    //     console.log(response.rooms);
+    //     setRooms(response.rooms);
+    //   })
+    updateQueue()
   }, [])
 
   var helpClient = (room) => {
@@ -62,6 +63,16 @@ export default function Home({ adminName }) {
       }
     );
     router.push(`${adminName}/${room}`);
+  }
+
+  const updateQueue = () => {
+    fetch(process.env.BACKEND_URL)
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        setRooms(response.rooms);
+      })
   }
 
   return (
@@ -89,7 +100,18 @@ export default function Home({ adminName }) {
           Unattended Cases: {rooms.length}
         </Text>
       </Row>
-      <Spacer y={2} />
+      <Spacer y={1} />
+      <Row justify="center">
+        <Button
+          auto
+          color="success"
+          onClick={() => updateQueue()
+          }
+        >
+          Update Queue
+        </Button>
+      </Row>
+      <Spacer y={1} />
       <Row width="90vw" justify='center'>
         <Table
           bordered
@@ -137,11 +159,32 @@ export default function Home({ adminName }) {
                   >
                     <Row justify="center">
                       <Button
+                      auto
                         size="xs"
                         onClick={() => helpClient(room)}
                       >
                         Join Chat
                       </Button>
+                      <Spacer x={0.5} />
+                      <Button
+                        auto
+                        color="error"
+                        size="xs"
+                        onClick={() =>
+                          fetch(
+                            `${process.env.BACKEND_URL}/${room}`,
+                            {
+                              method: 'DELETE'
+                            }
+                          )
+                            .then(() => {
+                              updateQueue();
+                            })
+                        }
+                      >
+                        Delete
+                      </Button>
+
                     </Row>
                   </Table.Cell>
                 </Table.Row>
