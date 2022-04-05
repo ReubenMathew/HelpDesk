@@ -44,15 +44,14 @@ export default function Home({ adminName }) {
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
-    // fetch(process.env.BACKEND_URL)
-    //   .then((response) => {
-    //     return response.json();
-    //   })
-    //   .then((response) => {
-    //     console.log(response.rooms);
-    //     setRooms(response.rooms);
-    //   })
-    updateQueue()
+    fetch(process.env.BACKEND_URL)
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        console.log(response.rooms);
+        setRooms(response.rooms);
+      })
   }, [])
 
   var helpClient = (room) => {
@@ -89,7 +88,7 @@ export default function Home({ adminName }) {
           Admin Support Queue
         </Text>
       </Row>
-      <Spacer y={1} />
+      <Spacer y={0.5} />
       <Row justify="center">
         <Text
           h1
@@ -144,7 +143,7 @@ export default function Home({ adminName }) {
                   <Table.Cell>
                     <Text
                       h1
-                      size={20}
+                      size={"80%"}
                       weight="bold"
                       color="black"
                       justify="center"
