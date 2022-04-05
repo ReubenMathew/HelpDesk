@@ -80,7 +80,8 @@ export default function Home({ adminName }) {
       <Row justify="center">
         <Text
           h1
-          size={60}
+          //auto
+          size={"4vw"}
           weight="bold"
           color="black"
           justify="center"
@@ -92,7 +93,8 @@ export default function Home({ adminName }) {
       <Row justify="center">
         <Text
           h1
-          size={30}
+          //size={30}
+          size={"2vw"}
           weight="bold"
           color="black"
           justify="center"
@@ -112,18 +114,18 @@ export default function Home({ adminName }) {
         </Button>
       </Row>
       <Spacer y={1} />
-      <Row width="90vw" justify='center'>
+      <Row auto justify='center'>
         <Table
           bordered
           shadow={true}
           color="primary"
           aria-label="Example pagination  table"
           //css={{ width: "90vw" }}
-          css={{ width: "calc($space$20 * 10)", minWidth: "200px" }}
+          css={{width: "90vw", minWidth: "200px", maxWidth: "600px" }}
         >
           <Table.Header>
             <Table.Column
-              css={{ width: "60%" }}
+              css={{ width: "auto" }}
               align="center"
             >Anonymous User</Table.Column>
             <Table.Column
