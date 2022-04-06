@@ -7,6 +7,8 @@ const redis = require("redis");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
+const e = require('express');
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -56,7 +58,6 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("A user has joined the chat");
   socket.on("join_room", (data) => {
-    // TODO(Reuben): Add room validation
     console.log("User joined room:", data);
     socket.join(data);
   });
@@ -109,34 +110,36 @@ app.post('/login', async (req, res) => {
   const password = req.body.password;
 
   const token = jwt.sign({ role: 'admin', username: username }, JWT_SECRET);
-  await client.get(username).then(storedPassword => {
-    if (storedPassword == null) {
-      res
-        .status(403)
-        .json({
-          authenticated: false,
-          reason: "No user found"
-        });
-    } else if (storedPassword == password) {
-      console.log("%s logged in %s", username, token);
-      res
-        .cookie("access_token", token, {
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'none',
-          httpOnly: false
-        })
-        .status(200)
-        .json({
-          authenticated: true,
-          token: token
-        });
-    } else {
-      res.json({
+  const storedHash = await client.get(username).then(res => res);
+  const authenticated = await bcrypt.compare(password, storedHash).then(result => result);
+  console.log("attempting login with:", storedHash, "\tresult:", authenticated);
+  if (storedHash == null) {
+    res
+      .status(403)
+      .json({
         authenticated: false,
-        reason: "Incorrect password"
-      }).status(403);
-    }
-  });
+        reason: "No user found"
+      });
+  }
+  if (authenticated) {
+    console.log("%s logged in %s", username, token);
+    res
+      .cookie("access_token", token, {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'none',
+        httpOnly: false
+      })
+      .status(200)
+      .json({
+        authenticated: true,
+        token: token
+      });
+  } else {
+    res.json({
+      authenticated: false,
+      reason: "Incorrect password"
+    }).status(403);
+  }
 });
 
 app.post('/enqueue', (req, res) => {
@@ -184,6 +187,7 @@ app.post("/verifyAdmin", (req, res) => {
   console.log("Attempting admin verification with", token);
   try {
     const data = jwt.verify(token, JWT_SECRET);
+    console.log(data);
     const token_role = data.role;
     if (token_role === 'admin') {
       console.log()
