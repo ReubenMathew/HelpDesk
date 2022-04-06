@@ -4,26 +4,7 @@ import { Container, Row, Text, Button, Spacer, Table, styled } from '@nextui-org
 
 export async function getServerSideProps({ params, req }) {
   const adminName = params.admin;
-  const cookies = req.headers.cookie;
   let authenticated = true;
-  // let authenticated = await fetch(`${process.env.BACKEND_URL}/verifyAdmin`,
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       cookie: cookies
-  //     },
-  //     body: {
-  //       token: cookies.access_token
-  //     }
-  //   }
-  // ).then((res) => {
-  //   return res.json();
-  // }).then((res) => {
-  //   console.log(cookies, res);
-  //   return res.authentication;
-  // }).catch(e => {
-  //   return false;
-  // });
   // Pass data to the page via props if authenticated
   return { props: { adminName, authenticated } }
 }
@@ -69,7 +50,7 @@ export default function Home({ adminName, authenticated }) {
       .then((response) => {
         setRooms(response.rooms);
       })
-  }, [])
+  }, []);
 
   var helpClient = (room) => {
     fetch(
