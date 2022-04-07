@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client'
+import io from 'socket.io-client';
 import { Container, Card, Grid, Row, Input, Button, Spacer, Text, Col, Modal } from '@nextui-org/react';
 
 let socket = false;
@@ -8,28 +8,6 @@ let socket = false;
 export async function getServerSideProps({ params, req }) {
   const room = params.room;
   const adminName = params.admin;
-  // const cookies = req.headers.cookie;
-  // let authenticated = await fetch(`${process.env.BACKEND_URL}/verifyAdmin`,
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       cookie: cookies
-  //     },
-  //     body: {
-  //       token: cookies.access_token
-  //     }
-  //   }
-  // ).then((res) => {
-  //   return res.json();
-  // }).then((res) => {
-  //   console.log(res);
-  //   return res.authentication;
-  // }).catch(e => {
-  //   return false;
-  // });
-  // if (!authenticated) {
-  //   return { props: { adminName }, redirect: { destination: '/admin/error' } }
-  // }
   // Pass data to the page via props if authenticated
   return { props: { room, adminName } }
 }
