@@ -116,9 +116,9 @@ export default function Home() {
                 <Text h2 color="black">
                   We Are Here For You!
                 </Text>
-                {/* <Text h1 color="black">
+                <Text h1 color="black">
                   Click the button below to start chatting with us.
-                </Text> */}
+                </Text>
               </Col>
             </Card.Header>
             <Card.Body
