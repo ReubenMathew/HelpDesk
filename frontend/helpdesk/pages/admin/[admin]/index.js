@@ -67,7 +67,7 @@ export default function Home({ adminName, authenticated }) {
       setMessages([...messages, msg]);
     });
   }, [messages]);
-  
+
   useEffect(() => {
     fetch(process.env.BACKEND_URL)
       .then((response) => {
@@ -124,179 +124,216 @@ export default function Home({ adminName, authenticated }) {
           color="black"
           justify="center"
         >
-          Admin Support Queue
-        </Text>
-      </Row>
-      <Spacer y={0.5} />
-      <Row justify="center">
-        <Text
-          h1
-          //size={30}
-          size={"2vw"}
-          weight="bold"
-          color="black"
-          justify="center"
-        >
-          Unattended Cases: {rooms.length}
+          Admin Control Panel
         </Text>
       </Row>
       <Spacer y={1} />
       <Row justify="center">
-        <Button
-          auto
-          color="success"
-          onClick={() => updateQueue()
-          }
-        >
-          Update Queue
-        </Button>
-      </Row>
-      <Spacer y={1} />
-      <Row auto justify='center'>
-        <Table
-          bordered
-          shadow={true}
-          color="primary"
-          aria-label="Example pagination  table"
-          //css={{ width: "90vw" }}
-          css={{ width: "90vw", minWidth: "200px", maxWidth: "600px" }}
-        >
-          <Table.Header>
-            <Table.Column
-              css={{ width: "auto" }}
-              align="center"
-            >Anonymous User</Table.Column>
-            <Table.Column
-              css={{ width: "auto" }}
-              align="center"
-            >Status</Table.Column>
-            <Table.Column
-              css={{ width: "auto" }}
-              align="center"
-            >Action</Table.Column>
-          </Table.Header>
-          <Table.Body>
-            {rooms.map(
-              room =>
-                <Table.Row key={room}>
-                  <Table.Cell>
-                    <Text
-                      h1
-                      size={"80%"}
-                      weight="bold"
-                      color="black"
-                      justify="center"
-                    >
-                      {room}
-                    </Text>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Row justify="center">
-                      <StyledBadge type="unattended">Unattended</StyledBadge>
-                    </Row>
-                  </Table.Cell>
-                  <Table.Cell
-                  >
-                    <Row justify="center">
-                      <Button
-                        auto
-                        size="xs"
-                        onClick={() => helpClient(room)}
-                      >
-                        Join Chat
-                      </Button>
-                      <Spacer x={0.5} />
-                      <Button
-                        auto
-                        color="error"
-                        size="xs"
-                        onClick={() =>
-                          fetch(
-                            `${process.env.BACKEND_URL}/${room}`,
-                            {
-                              method: 'DELETE'
-                            }
-                          )
-                            .then(() => {
-                              updateQueue();
-                            })
-                        }
-                      >
-                        Delete
-                      </Button>
-
-                    </Row>
-                  </Table.Cell>
-                </Table.Row>
-            )
-            }
-          </Table.Body>
-          <Table.Pagination
-            shadow
-            noMargin
-            align="center"
-            rowsPerPage={15}
-          />
-        </Table>
-      </Row>
-      <Row
-        css={{ height: "80vh", overflow: "clip auto" }}
-      >
-      <Grid.Container gap={5}>
-        {
-          messages.map(
-            msg =>
-              <Row key={msg.message.substring(0, 16)} justify={msg.author !== adminName ? "flex-end" : "flex-start"}>
-                <Card
-                  color={msg.author !== adminName ? "success" : "primary"}
-                  css={{ width: "max-content", maxWidth: "45vw", margin: "0.25rem 0 0", height: "max-content", maxHeight: "45vw" }}
-                  key={msg.message}
-                >
-                  {msg.message}
-                  <Card.Footer>
-                    <Row>
-                      <Col>
-                        <Row>
-                          {msg.author === adminName ? "You" : msg.author}
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Card.Footer>
-                </Card>
-              </Row>
-          )
-        }
-      </Grid.Container>
-      </Row>
-      <Row>
-        <Input
-          css={{ width: "100%" }}
-          onChange={e => setInput(e.target.value)} value={input}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              { sendMessage() }
-            }
-          }}
-          clearable
-          contentRightStyling={false}
-          placeholder="Type your message..."
-          contentRight={
-            <Row>
-              <Spacer x={0.5} />
-              <Button
-                color="primary"
-                css={{
-                  borderTopLeftRadius: "0px",
-                  borderBottomLeftRadius: "0px"
-                }}
-                auto
-                onClick={sendMessage}
+        <Col>
+          <Row justify="center">
+            <Text
+              h1
+              //auto
+              size={"2vw"}
+              weight="bold"
+              color="black"
+              justify="center"
+            >
+              Support Queue
+            </Text>
+          </Row>
+          <Spacer y={1} />
+          <Row>
+            <Row justify="center">
+              <Text
+                h1
+                //size={30}
+                size={"2vw"}
+                weight="bold"
+                color="black"
+                justify="center"
               >
-                Send
+                Unattended Cases: {rooms.length}
+              </Text>
+            </Row>
+            <Spacer y={1} />
+            <Row justify="center">
+              <Button
+                auto
+                color="success"
+                onClick={() => updateQueue()
+                }
+              >
+                Update Queue
               </Button>
             </Row>
-          }
-        />
+          </Row>
+          <Spacer y={1} />
+          <Row auto justify='center'>
+            <Table
+              bordered
+              shadow={true}
+              color="primary"
+              aria-label="Example pagination  table"
+              //css={{ width: "90vw" }}
+              //css={{ width: "90vw", minWidth: "200px", maxWidth: "600px" }}
+              css={{ width: "50vw" }}
+            >
+              <Table.Header>
+                <Table.Column
+                  css={{ width: "auto" }}
+                  align="center"
+                >Anonymous User</Table.Column>
+                <Table.Column
+                  css={{ width: "auto" }}
+                  align="center"
+                >Status</Table.Column>
+                <Table.Column
+                  css={{ width: "auto" }}
+                  align="center"
+                >Action</Table.Column>
+              </Table.Header>
+              <Table.Body>
+                {rooms.map(
+                  room =>
+                    <Table.Row key={room}>
+                      <Table.Cell>
+                        <Text
+                          h1
+                          size={"80%"}
+                          weight="bold"
+                          color="black"
+                          justify="center"
+                        >
+                          {room}
+                        </Text>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Row justify="center">
+                          <StyledBadge type="unattended">Unattended</StyledBadge>
+                        </Row>
+                      </Table.Cell>
+                      <Table.Cell
+                      >
+                        <Row justify="center">
+                          <Button
+                            auto
+                            size="xs"
+                            onClick={() => helpClient(room)}
+                          >
+                            Join Chat
+                          </Button>
+                          <Spacer x={0.5} />
+                          <Button
+                            auto
+                            color="error"
+                            size="xs"
+                            onClick={() =>
+                              fetch(
+                                `${process.env.BACKEND_URL}/${room}`,
+                                {
+                                  method: 'DELETE'
+                                }
+                              )
+                                .then(() => {
+                                  updateQueue();
+                                })
+                            }
+                          >
+                            Delete
+                          </Button>
+
+                        </Row>
+                      </Table.Cell>
+                    </Table.Row>
+                )
+                }
+              </Table.Body>
+              <Table.Pagination
+                shadow
+                noMargin
+                align="center"
+                rowsPerPage={16}
+              />
+            </Table>
+          </Row>
+        </Col>
+        <Spacer x={2} />
+        <Col>
+          <Row justify="center">
+            <Text
+              h1
+              //auto
+              size={"2vw"}
+              weight="bold"
+              color="black"
+              justify="center"
+            >
+              Admins Chat Room
+            </Text>
+          </Row>
+          <Spacer y={4} />
+          <Row
+            css={{ height: "72vh", overflow: "clip auto" }}
+          //css={{ width: "90vw", minWidth: "200px", maxWidth: "600px" }}
+          >
+            <Grid.Container gap={5}>
+              {
+                messages.map(
+                  msg =>
+                    <Row key={msg.message.substring(0, 16)} justify={msg.author === adminName ? "flex-end" : "flex-start"}>
+                      <Card
+                        color={msg.author === adminName ? "success" : "primary"}
+                        css={{ width: "max-content", maxWidth: "15vw", margin: "0.25rem 0 0", height: "max-content", maxHeight: "15vh" }}
+                        key={msg.message}
+                      >
+                        {msg.message}
+                        <Card.Footer>
+                          <Row>
+                            <Col>
+                              <Row>
+                                {msg.author == adminName ? "You" : msg.author}
+                              </Row>
+                            </Col>
+                          </Row>
+                        </Card.Footer>
+                      </Card>
+                    </Row>
+                )
+              }
+            </Grid.Container>
+          </Row>
+          <Row>
+            <Input
+              css={{ width: "100%" }}
+              onChange={e => setInput(e.target.value)} value={input}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  { sendMessage() }
+                }
+              }}
+              clearable
+              contentRightStyling={false}
+              placeholder="Type your message..."
+              contentRight={
+                <Row>
+                  <Spacer x={0.5} />
+                  <Button
+                    color="primary"
+                    css={{
+                      borderTopLeftRadius: "0px",
+                      borderBottomLeftRadius: "0px"
+                    }}
+                    auto
+                    onClick={sendMessage}
+                  >
+                    Send
+                  </Button>
+                </Row>
+              }
+            />
+          </Row>
+        </Col>
       </Row>
     </Container>
   )

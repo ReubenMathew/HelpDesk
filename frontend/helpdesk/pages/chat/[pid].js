@@ -191,9 +191,6 @@ const Post = ({ room }) => {
             {messages.map(
               msg =>
                 <Row key={msg.message} justify={msg.author === `AnonymousUser ${roomName}` ? "flex-end" : "flex-start"}>
-                  {
-                    console.log("5ara", msg.author)
-                  }
                   <Card
                     color={msg.author === `AnonymousUser ${roomName}` ? "success" : "primary"}
                     css={{ width: "max-content", maxWidth: "45vw", margin: "0.25rem 0 0", height: "max-content", maxHeight: "45vw" }}
