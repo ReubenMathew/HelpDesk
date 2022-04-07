@@ -1,6 +1,10 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Container, Row, Text, Button, Spacer, Table, styled } from '@nextui-org/react';
+import io from 'socket.io-client';
+import { Card, Container, Col, Grid, Input, Row, Text, Button, Spacer, Table, styled } from '@nextui-org/react';
+
+let socket = false;
+const adminRoomName = 'AdminRoom';
 
 export async function getServerSideProps({ params, req }) {
   const adminName = params.admin;
@@ -41,7 +45,29 @@ export default function Home({ adminName, authenticated }) {
 
   const router = useRouter();
   const [rooms, setRooms] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
 
+  useEffect(() => {
+    if (!socket) {
+      socket = io(process.env.BACKEND_URL);
+    }
+    socket.emit("join_room", adminRoomName);
+    const Message = {
+      room: adminRoomName,
+      message: `${adminName} has joined the session.`,
+      author: "System"
+    }
+    socket.emit("send_message", Message);
+  }, []);
+
+  useEffect(() => {
+    socket.on("receive_message", (msg) => {
+      console.log(msg);
+      setMessages([...messages, msg]);
+    });
+  }, [messages]);
+  
   useEffect(() => {
     fetch(process.env.BACKEND_URL)
       .then((response) => {
@@ -51,6 +77,21 @@ export default function Home({ adminName, authenticated }) {
         setRooms(response.rooms);
       })
   }, []);
+
+  const sendMessage = () => {
+    if (input == "") {
+      return;
+    }
+    const Message = {
+      room: adminRoomName,
+      message: input,
+      author: adminName,
+      isImage: false
+    }
+    socket.emit("send_message", Message);
+    setMessages([...messages, Message]);
+    setInput("");
+  }
 
   var helpClient = (room) => {
     fetch(
@@ -118,7 +159,7 @@ export default function Home({ adminName, authenticated }) {
           color="primary"
           aria-label="Example pagination  table"
           //css={{ width: "90vw" }}
-          css={{width: "90vw", minWidth: "200px", maxWidth: "600px" }}
+          css={{ width: "90vw", minWidth: "200px", maxWidth: "600px" }}
         >
           <Table.Header>
             <Table.Column
@@ -158,7 +199,7 @@ export default function Home({ adminName, authenticated }) {
                   >
                     <Row justify="center">
                       <Button
-                      auto
+                        auto
                         size="xs"
                         onClick={() => helpClient(room)}
                       >
@@ -197,6 +238,65 @@ export default function Home({ adminName, authenticated }) {
             rowsPerPage={15}
           />
         </Table>
+      </Row>
+      <Row
+        css={{ height: "80vh", overflow: "clip auto" }}
+      >
+      <Grid.Container gap={5}>
+        {
+          messages.map(
+            msg =>
+              <Row key={msg.message.substring(0, 16)} justify={msg.author !== adminName ? "flex-end" : "flex-start"}>
+                <Card
+                  color={msg.author !== adminName ? "success" : "primary"}
+                  css={{ width: "max-content", maxWidth: "45vw", margin: "0.25rem 0 0", height: "max-content", maxHeight: "45vw" }}
+                  key={msg.message}
+                >
+                  {msg.message}
+                  <Card.Footer>
+                    <Row>
+                      <Col>
+                        <Row>
+                          {msg.author === adminName ? "You" : msg.author}
+                        </Row>
+                      </Col>
+                    </Row>
+                  </Card.Footer>
+                </Card>
+              </Row>
+          )
+        }
+      </Grid.Container>
+      </Row>
+      <Row>
+        <Input
+          css={{ width: "100%" }}
+          onChange={e => setInput(e.target.value)} value={input}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              { sendMessage() }
+            }
+          }}
+          clearable
+          contentRightStyling={false}
+          placeholder="Type your message..."
+          contentRight={
+            <Row>
+              <Spacer x={0.5} />
+              <Button
+                color="primary"
+                css={{
+                  borderTopLeftRadius: "0px",
+                  borderBottomLeftRadius: "0px"
+                }}
+                auto
+                onClick={sendMessage}
+              >
+                Send
+              </Button>
+            </Row>
+          }
+        />
       </Row>
     </Container>
   )
