@@ -20,7 +20,7 @@
     "jwt-decode": "^3.1.2",
     "nodemon": "^2.0.15",
     "redis": "^4.0.4",
-    "sanitize": "^2.1.0",
+    "sanitize": "^2.1.2",
     "socket.io": "^4.4.1"
   }
 }
